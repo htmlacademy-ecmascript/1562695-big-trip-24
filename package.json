@@ -12,5 +12,12 @@
   },
   "engines": {
     "node": "20"
-  }
+  },
+  "main": "index.js",
+  "dependencies": {
+    "autopreview": "^1.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

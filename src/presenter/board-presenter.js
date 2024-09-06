@@ -10,18 +10,20 @@ export default class BoardPresenter {
   boardComponent = new BoardView();
   routePointListComponent = new RoutePointListView();
 
-  constructor({boardContainer}) {
+  constructor({boardContainer, routePointsModel}) {
     this.boardContainer = boardContainer;
+    this.routePointsModel = routePointsModel;
   }
 
   init() {
+    this.boardRoutePoints = [...this.routePointsModel.getRoutePoints()];
     render(this.boardComponent, this.boardContainer);
     render(new SortView(), this.boardComponent.getElement());
     render(this.routePointListComponent, this.boardComponent.getElement());
     render(new PointEditFormView(), this.routePointListComponent.getElement());
 
-    for (let i = 0; i < 3; i++) {
-      render(new RoutePointView(), this.routePointListComponent.getElement());
+    for (let i = 0; i < this.boardRoutePoints.length; i++) {
+      render(new RoutePointView({point: this.boardRoutePoints[i]}), this.routePointListComponent.getElement());
     }
 
   }

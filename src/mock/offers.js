@@ -10,14 +10,14 @@ const mockOffers = [
         price: getRandomInteger(1, 500),
       },
       {
-        id: 2,
+        id: '2',
         title: 'Order Uber',
         price: getRandomInteger(1, 500)
       },
     ],
   },
   {
-    type: "Drive",
+    type: "drive",
     offers: [
       {
         id: '1',
@@ -27,7 +27,7 @@ const mockOffers = [
     ],
   },
   {
-    type: "Restaurant",
+    type: "restaurant",
     offers: [
       {
         id: '1',
@@ -42,7 +42,7 @@ const mockOffers = [
     ],
   },
   {
-    type: "Sightseeing",
+    type: "sightseeing",
     offers: [
       {
         id: '1',
@@ -57,7 +57,7 @@ const mockOffers = [
     ],
   },
   {
-    type: "Flight",
+    type: "flight",
     offers: [
       {
         id: '1',

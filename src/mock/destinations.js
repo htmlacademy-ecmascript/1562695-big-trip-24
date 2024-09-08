@@ -5,7 +5,7 @@ const mockDestinations = [
   {
     id:1,
     name:getRandomArrayElement(CITIES),
-    description:getRandomText(DESCRIPTION_TEXT),
+    description:`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. `,
     pictures: [
       {
         src:`https://loremflickr.com/248/152?random=${getRandomInteger(1, 20)}`,

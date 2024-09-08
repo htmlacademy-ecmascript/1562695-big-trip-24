@@ -10,8 +10,12 @@ function getRandomInteger(min,max){
 
 function getRandomText(text){
   const textArray = text.split('.');
-  const randomText = Array.from({ length: 5 }, getRandomArrayElement(textArray).trim()).join('.');
-  return randomText;
+  return getRandomArrayElement(textArray).trim();
 }
 
-export {getRandomArrayElement, getRandomInteger, getRandomText};
+function capitalizeText(text){
+  return text.charAt(0).toUpperCase()+text.slice(1);
+
+}
+
+export {getRandomArrayElement, getRandomInteger, getRandomText, capitalizeText};

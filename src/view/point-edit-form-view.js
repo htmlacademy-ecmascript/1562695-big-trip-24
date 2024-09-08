@@ -1,24 +1,12 @@
 import { createElement } from '../render.js';
-import { capitalizeText } from '../utils.js';
-import { TYPES } from "../const";
-
-// const BLANK_POINT= [
-//   {
-//     type: TYPES[0].toLowerCase(),
-//     basePrice: 0,
-//     destination: ,
-//     date_from: null,
-//     date_to:null,
-//     isFavorite: false,
-//     offers:[
-//     ]
-//   },
-// ]
+import { capitalizeText, humanizeRoutePointDate } from '../utils.js';
+import { TYPES, BLANK_POINT, FULL_DATE_FORMAT } from '../const';
 
 const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffers, allDestinations) => {
-  const { basePrice, type } = routePoint;
+  const { basePrice, type, dateFrom, dateTo } = routePoint;
   const typeName = capitalizeText(type);
-
+  const startTime = humanizeRoutePointDate(dateFrom, FULL_DATE_FORMAT);
+  const endTime = humanizeRoutePointDate(dateTo, FULL_DATE_FORMAT);
   const createTypeItemTemplate = (typeItem, isCheckedTypeItem) =>
     ` 
       <div class="event__type-item">
@@ -30,8 +18,8 @@ const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffer
   const createOfferItemTemplate = (offerItem, isCheckedOfferItem) =>
     `
       <div class="event__offer-selector">
-        <input class="event__offer-checkbox visually-hidden" id="event-offer-${type.toLowerCase()}-1" type="checkbox" name="event-offer-${type.toLowerCase()}" value="${offerItem.id}" ${isCheckedOfferItem ? 'checked' : ''}>
-        <label class="event__offer-label" for="event-offer-${type.toLowerCase()}-1">
+        <input class="event__offer-checkbox visually-hidden" id="event-offer-${offerItem.id}-1" type="checkbox" name="event-offer-${type.toLowerCase()}" value="${offerItem.id}" ${isCheckedOfferItem ? 'checked' : ''}>
+        <label class="event__offer-label" for="event-offer-${offerItem.id}-1">
           <span class="event__offer-title">${offerItem.title}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${offerItem.price}</span>
@@ -41,19 +29,17 @@ const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffer
 
   const createTypeListTemplate = TYPES.map((typeItem) => {
     const isCheckedTypeItem = typeItem === typeName;
-    return createTypeItemTemplate(typeItem, isCheckedTypeItem)
+    return createTypeItemTemplate(typeItem, isCheckedTypeItem);
   }).join('');
-
-
 
   const createAllOffersTemplate = allOffers.offers.map((offerItem) => {
     const isCheckedOfferItem = routePoint.offers.includes(offerItem.id);
-    return createOfferItemTemplate(offerItem, isCheckedOfferItem)
+    return createOfferItemTemplate(offerItem, isCheckedOfferItem);
   }).join('');
 
   const createAllDestinationsTemplate = allDestinations.map((desctinationItem) => `<option value="${desctinationItem.name}"></option>`).join('');
 
-  const createPhotoesTemplate = destinationRoutePoint.pictures.map((pictureItem) => `<img class="event__photo" src="${pictureItem.src}" alt="Event photo">`).join('');
+  const createPhotoesTemplate = (destinationRoutePoint && destinationRoutePoint.pictures ? destinationRoutePoint.pictures.map((pictureItem) => `<img class="event__photo" src="${pictureItem.src}" alt="Event photo">`).join('') : '');
   return `(
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
@@ -76,7 +62,7 @@ const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffer
                     <label class="event__label  event__type-output" for="event-destination-1">
                       ${typeName}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationRoutePoint ? destinationRoutePoint.name : ''}" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationRoutePoint && destinationRoutePoint.name ? destinationRoutePoint.name : ''}" list="destination-list-1">
                     <datalist id="destination-list-1">
                       ${createAllDestinationsTemplate}
                     </datalist>
@@ -84,10 +70,10 @@ const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffer
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 12:25">
+                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 13:35">
+                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endTime}">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -111,9 +97,8 @@ const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffer
                       <div class="event__available-offers">
                         ${createAllOffersTemplate}
                       </div>
-                    </section>`: ``}
-
-                  ${destinationRoutePoint ? `
+                    </section>` : ''}
+                  ${destinationRoutePoint && (destinationRoutePoint.description || createPhotoesTemplate.length > 0) ? `
                     <section class="event__section  event__section--destination">
                       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
                       <p class="event__destination-description">${destinationRoutePoint.description}</p>
@@ -122,24 +107,22 @@ const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffer
                         <div class="event__photos-tape">
                           ${createPhotoesTemplate}
                         </div>
-                      </div>`: ``}
-                      </section> 
-                   
-                    `: ``}
+                      </div>` : ''}
+                      </section>` : ''}
                 </section>
               </form>
   )`;
-}
+};
 
 export default class PointEditFormView {
 
-  constructor({ routePoint, destinationRoutePoint, allOffers, allDestinations }) {
+  constructor({ routePoint = BLANK_POINT, destinationRoutePoint = {}, allOffers, allDestinations }) {
     this.routePoint = routePoint;
     this.destinationRoutePoint = destinationRoutePoint;
     this.allOffers = allOffers;
     this.allDestinations = allDestinations;
-    
   }
+
   getTemplate() {
     return createPointEditFormTemplate(this.routePoint, this.destinationRoutePoint, this.allOffers, this.allDestinations);
   }

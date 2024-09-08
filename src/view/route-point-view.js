@@ -1,10 +1,11 @@
 import { createElement } from '../render.js';
-import { capitalizeText } from '../utils.js';
+import { capitalizeText, humanizeRoutePointDate, calculateDiffTime} from '../utils.js';
+import {DATE_FORMAT, TIME_FORMAT} from '../const';
 
 const createRoutePointTemplate = (routePoint, offers, destination)=> {
-  const { basePrice, type, isFavorite } = routePoint;
+  const { basePrice, type, isFavorite, dateFrom, dateTo } = routePoint;
   const typeName = capitalizeText(type);
-  const favoriteClassName = isFavorite ? " event__favorite-btn--active" : "";
+  const favoriteClassName = isFavorite ? ' event__favorite-btn--active' : '';
   const createOfferItemTemplate = (offerItem) => `
     <li class="event__offer">
       <span class="event__offer-title">${offerItem.title}</span>
@@ -12,22 +13,23 @@ const createRoutePointTemplate = (routePoint, offers, destination)=> {
       <span class="event__offer-price">${offerItem.price}</span>
     </li>
   `;
+  const datePoint = humanizeRoutePointDate(dateFrom, DATE_FORMAT);
   const createOffersTemplate = offers.map((offerItem)=>createOfferItemTemplate(offerItem)).join('');
   return `(
             <li class="trip-events__item">
               <div class="event">
-                <time class="event__date" datetime="2019-03-18">MAR 18</time>
+                <time class="event__date" datetime="2019-03-18">${datePoint}</time>
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
                 </div>
                 <h3 class="event__title">${typeName} ${destination.name}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
-                    <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+                    <time class="event__start-time" datetime="${dateFrom}">${humanizeRoutePointDate(dateFrom, TIME_FORMAT)}</time>
                     &mdash;
-                    <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+                    <time class="event__end-time" datetime="${dateTo}">${humanizeRoutePointDate(dateFrom, TIME_FORMAT)}</time>
                   </p>
-                  <p class="event__duration">30M</p>
+                  <p class="event__duration">${calculateDiffTime(dateFrom,dateTo)}</p>
                 </div>
                 <p class="event__price">
                   &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
@@ -48,7 +50,7 @@ const createRoutePointTemplate = (routePoint, offers, destination)=> {
               </div>
             </li>
   )`;
-}
+};
 export default class RoutePointView {
   constructor({ routePoint, offers, destination }) {
     this.routePoint = routePoint;

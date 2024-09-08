@@ -21,8 +21,6 @@ export default class BoardPresenter {
     render(new SortView(), this.boardComponent.getElement());
     render(this.routePointListComponent, this.boardComponent.getElement());
     // render(new PointEditFormView({
-    //   // routePoint: this.boardRoutePoints[0],
-    //   // destinationRoutePoint:null,
     //   allOffers:this.routePointsModel.getOffersByType(),
     //   allDestinations:this.routePointsModel.getDestinations()
     // }), this.routePointListComponent.getElement());

@@ -1,11 +1,11 @@
 import {getRandomArrayElement, getRandomText, getRandomInteger} from '../utils.js';
-import {CITIES, DESCRIPTION_TEXT} from "../const";
+import {CITIES, DESCRIPTION_TEXT} from '../const';
 
 const mockDestinations = [
   {
     id:1,
     name:getRandomArrayElement(CITIES),
-    description:`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. `,
+    description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget.',
     pictures: [
       {
         src:`https://loremflickr.com/248/152?random=${getRandomInteger(1, 20)}`,
@@ -31,7 +31,7 @@ const mockDestinations = [
     pictures: [
       {
         src:`https://loremflickr.com/248/152?random=${getRandomInteger(1, 20)}`,
-        description: "Chamonix parliament building"
+        description: 'Chamonix parliament building'
       }
     ],
   },
@@ -57,9 +57,6 @@ const mockDestinations = [
       }
     ],
   },
-]
-
-
-
+];
 
 export {mockDestinations};

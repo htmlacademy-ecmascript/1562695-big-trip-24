@@ -1,12 +1,12 @@
-import { getRandomInteger } from "../utils.js";
+import { getRandomInteger } from '../utils.js';
 
 const mockOffers = [
   {
-    type: "taxi",
+    type: 'taxi',
     offers: [
       {
         id: '1',
-        title: "Upgrade to a business class",
+        title: 'Upgrade to a business class',
         price: getRandomInteger(1, 500),
       },
       {
@@ -17,63 +17,61 @@ const mockOffers = [
     ],
   },
   {
-    type: "drive",
+    type: 'drive',
     offers: [
       {
         id: '1',
-        title: "Rent a car",
+        title: 'Rent a car',
         price: getRandomInteger(1, 500),
       },
     ],
   },
   {
-    type: "restaurant",
+    type: 'restaurant',
     offers: [
       {
         id: '1',
-        title: "Add breakfast",
+        title: 'Add breakfast',
         price: getRandomInteger(1, 500),
       },
       {
         id: '2',
-        title: "Add dinner",
+        title: 'Add dinner',
         price: getRandomInteger(1, 500),
       },
     ],
   },
   {
-    type: "sightseeing",
+    type: 'sightseeing',
     offers: [
       {
         id: '1',
-        title: "Book tickets",
+        title: 'Book tickets',
         price: getRandomInteger(1, 500),
       },
       {
         id: '2',
-        title: "Lunch in city",
+        title: 'Lunch in city',
         price: getRandomInteger(1, 500),
       },
     ],
   },
   {
-    type: "flight",
+    type: 'flight',
     offers: [
       {
         id: '1',
-        title: "Add luggage",
+        title: 'Add luggage',
         price: getRandomInteger(1, 500),
       },
       {
         id: '2',
-        title: "Switch to comfort",
+        title: 'Switch to comfort',
         price: getRandomInteger(1, 500),
       },
     ],
   },
 
 ];
-
-
 
 export {mockOffers};

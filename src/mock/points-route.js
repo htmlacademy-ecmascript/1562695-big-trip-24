@@ -5,8 +5,8 @@ const mockPoints = [
     type: 'taxi',
     basePrice: getRandomInteger(1, 500),
     destination: getRandomInteger(1, 5),
-    date_from: "2019-07-10T22:55:56.845Z",
-    date_to: "2019-07-11T11:22:13.375Z",
+    dateFrom: '2019-07-10T22:55:56.845Z',
+    dateTo: '2019-07-11T11:22:13.375Z',
     isFavorite: false,
     offers:[
       '1','2'
@@ -16,8 +16,8 @@ const mockPoints = [
     type: 'restaurant',
     basePrice: getRandomInteger(1, 500),
     destination: getRandomInteger(1, 5),
-    date_from: "2019-07-10T22:55:56.845Z",
-    date_to: "2019-07-11T11:22:13.375Z",
+    dateFrom: '2019-07-10T22:00:56.845Z',
+    dateTo: '2019-07-10T22:22:13.375Z',
     isFavorite: false,
     offers:[
       '2'
@@ -27,8 +27,8 @@ const mockPoints = [
     type: 'sightseeing',
     basePrice: getRandomInteger(1, 500),
     destination: getRandomInteger(1, 5),
-    date_from: "2019-07-10T22:55:56.845Z",
-    date_to: "2019-07-11T11:22:13.375Z",
+    dateFrom: '2019-07-10T22:55:56.845Z',
+    dateTo: '2019-07-15T11:22:13.375Z',
     isFavorite: false,
     offers:[
       '1','2'
@@ -38,8 +38,8 @@ const mockPoints = [
     type: 'flight',
     basePrice: getRandomInteger(1, 500),
     destination: getRandomInteger(1, 5),
-    date_from: "2019-07-10T22:55:56.845Z",
-    date_to: "2019-07-11T11:22:13.375Z",
+    dateFrom: '2019-07-10T22:55:56.845Z',
+    dateTo: '2019-07-11T11:22:13.375Z',
     isFavorite: false,
     offers:[
       '2'
@@ -49,8 +49,8 @@ const mockPoints = [
     type: 'drive',
     basePrice: getRandomInteger(1, 500),
     destination: getRandomInteger(1, 5),
-    date_from: "2019-07-10T22:55:56.845Z",
-    date_to: "2019-07-11T11:22:13.375Z",
+    dateFrom: '2019-07-10T22:55:56.845Z',
+    dateTo: '2019-07-11T11:22:13.375Z',
     isFavorite: false,
     offers:[
       '1','2'
@@ -60,14 +60,14 @@ const mockPoints = [
     type: 'sightseeing',
     basePrice: getRandomInteger(1, 500),
     destination: getRandomInteger(1, 5),
-    date_from: "2019-07-10T22:55:56.845Z",
-    date_to: "2019-07-11T11:22:13.375Z",
+    dateFrom: '2019-07-10T22:55:56.845Z',
+    dateTo: '2019-07-15T11:22:13.375Z',
     isFavorite: false,
     offers:[
       '1','2'
     ]
   },
-]
+];
 
 function getRandomPoint() {
   return getRandomArrayElement(mockPoints);

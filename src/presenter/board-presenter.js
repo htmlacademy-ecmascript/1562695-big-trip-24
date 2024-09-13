@@ -8,14 +8,14 @@ import { render, replace } from '../framework/render.js';
 
 export default class BoardPresenter {
 
-  #boardContainer=null;
+  #boardContainer = null;
   #routePointsModel = null;
 
   #routePointListComponent = new RoutePointListView();
   #boardComponent = new BoardView();
-  #sorting= new SortView();
+  #sorting = new SortView();
 
-  #boardRoutePoints=[];
+  #boardRoutePoints = [];
 
 
   constructor({boardContainer, routePointsModel}) {
@@ -41,21 +41,6 @@ export default class BoardPresenter {
   }
 
   #renderRoutePoint(routePoint){
-    const routePointComponent = new RoutePointView({
-      routePoint,
-      offers:[...this.#routePointsModel.getOffersById(routePoint.type,routePoint.offers)],
-      destination: this.#routePointsModel.getDestinationsById(routePoint.destination),
-      onEditClick: () => showEditorPoint()
-    });
-
-    const editRoutePointComponent = new PointEditFormView({
-      routePoint,
-      destinationRoutePoint: this.#routePointsModel.getDestinationsById(this.#boardRoutePoints[0].destination),
-      allOffers:this.#routePointsModel.getOffersByType(this.#boardRoutePoints[0].type),
-      allDestinations:this.#routePointsModel.destinations,
-      onFormSubmit: () => hideEditorPoint(),
-      onEditRollUp: () => hideEditorPoint(),
-    })
 
     const escKeyDownHandler = (evt) => {
       if (evt.key === 'Escape') {
@@ -74,6 +59,22 @@ export default class BoardPresenter {
       replaceFormToRoutePoint();
       document.removeEventListener('keydown', escKeyDownHandler);
     };
+
+    const routePointComponent = new RoutePointView({
+      routePoint,
+      offers:[...this.#routePointsModel.getOffersById(routePoint.type,routePoint.offers)],
+      destination: this.#routePointsModel.getDestinationsById(routePoint.destination),
+      onEditClick: () => showEditorPoint()
+    });
+
+    const editRoutePointComponent = new PointEditFormView({
+      routePoint,
+      destinationRoutePoint: this.#routePointsModel.getDestinationsById(this.#boardRoutePoints[0].destination),
+      allOffers:this.#routePointsModel.getOffersByType(this.#boardRoutePoints[0].type),
+      allDestinations:this.#routePointsModel.destinations,
+      onFormSubmit: () => hideEditorPoint(),
+      onEditRollUp: () => hideEditorPoint(),
+    });
 
     function replaceRoutePointToForm() {
       replace(editRoutePointComponent, routePointComponent);

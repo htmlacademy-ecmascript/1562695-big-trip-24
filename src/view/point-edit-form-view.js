@@ -114,7 +114,7 @@ const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffer
   )`;
 };
 
-export default class PointEditFormView  extends AbstractView{
+export default class PointEditFormView extends AbstractView{
   #routePoint = null;
   #destinationRoutePoint = null;
 
@@ -146,6 +146,7 @@ export default class PointEditFormView  extends AbstractView{
     evt.preventDefault();
     this.#handleFormSubmit();
   };
+
   #editRollUpHandler = (evt) => {
     evt.preventDefault();
     this.#handleEditRollUp();

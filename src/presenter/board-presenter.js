@@ -4,40 +4,85 @@ import RoutePointListView from '../view/route-point-list-view.js';
 import RoutePointView from '../view/route-point-view.js';
 import PointEditFormView from '../view/point-edit-form-view.js';
 // import LoadMoreButtonView from '../view/load-more-button-view.js';
-import {render} from '../render.js';
+import { render, replace } from '../framework/render.js';
 
 export default class BoardPresenter {
-  boardComponent = new BoardView();
-  routePointListComponent = new RoutePointListView();
+
+  #boardContainer=null;
+  #routePointsModel = null;
+
+  #routePointListComponent = new RoutePointListView();
+  #boardComponent = new BoardView();
+  #sorting= new SortView();
+
+  #boardRoutePoints=[];
+
 
   constructor({boardContainer, routePointsModel}) {
-    this.boardContainer = boardContainer;
-    this.routePointsModel = routePointsModel;
+    this.#boardContainer = boardContainer;
+    this.#routePointsModel = routePointsModel;
   }
 
   init() {
-    this.boardRoutePoints = [...this.routePointsModel.getRoutePoints()];
-    render(this.boardComponent, this.boardContainer);
-    render(new SortView(), this.boardComponent.getElement());
-    render(this.routePointListComponent, this.boardComponent.getElement());
+    this.#boardRoutePoints = [...this.#routePointsModel.routePoints];
+    render(this.#boardComponent, this.#boardContainer);
+    render(this.#sorting, this.#boardComponent.element);
+    render(this.#routePointListComponent, this.#boardComponent.element);
     // render(new PointEditFormView({
     //   allOffers:this.routePointsModel.getOffersByType(),
     //   allDestinations:this.routePointsModel.getDestinations()
     // }), this.routePointListComponent.getElement());
-    render(new PointEditFormView({
-      routePoint: this.boardRoutePoints[0],
-      destinationRoutePoint: this.routePointsModel.getDestinationsById(this.boardRoutePoints[0].destination),
-      allOffers:this.routePointsModel.getOffersByType(this.boardRoutePoints[0].type),
-      allDestinations:this.routePointsModel.getDestinations()
-    }), this.routePointListComponent.getElement());
 
-    for (let i = 0; i < this.boardRoutePoints.length; i++) {
-      render(new RoutePointView({
-        routePoint: this.boardRoutePoints[i],
-        offers:[...this.routePointsModel.getOffersById(this.boardRoutePoints[i].type,this.boardRoutePoints[i].offers)],
-        destination: this.routePointsModel.getDestinationsById(this.boardRoutePoints[i].destination)
-      }), this.routePointListComponent.getElement());
+
+    for (let i = 0; i < this.#boardRoutePoints.length; i++) {
+      this.#renderRoutePoint(this.#boardRoutePoints[i]);
     }
 
+  }
+
+  #renderRoutePoint(routePoint){
+    const routePointComponent = new RoutePointView({
+      routePoint,
+      offers:[...this.#routePointsModel.getOffersById(routePoint.type,routePoint.offers)],
+      destination: this.#routePointsModel.getDestinationsById(routePoint.destination),
+      onEditClick: () => showEditorPoint()
+    });
+
+    const editRoutePointComponent = new PointEditFormView({
+      routePoint,
+      destinationRoutePoint: this.#routePointsModel.getDestinationsById(this.#boardRoutePoints[0].destination),
+      allOffers:this.#routePointsModel.getOffersByType(this.#boardRoutePoints[0].type),
+      allDestinations:this.#routePointsModel.destinations,
+      onFormSubmit: () => hideEditorPoint(),
+      onEditRollUp: () => hideEditorPoint(),
+    })
+
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceFormToRoutePoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
+    const showEditorPoint = () => {
+      replaceRoutePointToForm();
+      document.addEventListener('keydown', escKeyDownHandler);
+    };
+
+    const hideEditorPoint = () => {
+      replaceFormToRoutePoint();
+      document.removeEventListener('keydown', escKeyDownHandler);
+    };
+
+    function replaceRoutePointToForm() {
+      replace(editRoutePointComponent, routePointComponent);
+    }
+
+    function replaceFormToRoutePoint() {
+      replace(routePointComponent, editRoutePointComponent);
+    }
+
+    render(routePointComponent, this.#routePointListComponent.element);
   }
 }

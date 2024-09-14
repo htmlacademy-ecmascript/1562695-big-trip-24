@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { capitalizeText, humanizeRoutePointDate } from '../utils.js';
 import { TYPES, BLANK_POINT, FULL_DATE_FORMAT } from '../const';
 
@@ -8,7 +8,7 @@ const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffer
   const startTime = humanizeRoutePointDate(dateFrom, FULL_DATE_FORMAT);
   const endTime = humanizeRoutePointDate(dateTo, FULL_DATE_FORMAT);
   const createTypeItemTemplate = (typeItem, isCheckedTypeItem) =>
-    ` 
+    `
       <div class="event__type-item">
         <input id="event-type-${typeItem.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeItem.toLowerCase()}" ${isCheckedTypeItem ? 'checked' : ''}>
         <label class="event__type-label  event__type-label--${typeItem.toLowerCase()}" for="event-type-${typeItem.toLowerCase()}-1">${typeItem}</label>
@@ -91,7 +91,7 @@ const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffer
                   </button>
                 </header>
                 <section class="event__details">
-                  ${allOffers.offers.length > 0 ? `                  
+                  ${allOffers.offers.length > 0 ? `
                     <section class="event__section  event__section--offers">
                       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
                       <div class="event__available-offers">
@@ -114,28 +114,41 @@ const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffer
   )`;
 };
 
-export default class PointEditFormView {
+export default class PointEditFormView extends AbstractView{
+  #routePoint = null;
+  #destinationRoutePoint = null;
 
-  constructor({ routePoint = BLANK_POINT, destinationRoutePoint = {}, allOffers, allDestinations }) {
-    this.routePoint = routePoint;
-    this.destinationRoutePoint = destinationRoutePoint;
-    this.allOffers = allOffers;
-    this.allDestinations = allDestinations;
+  #allOffers = [];
+  #allDestinations = [];
+
+  #handleFormSubmit = null;
+  #handleEditRollUp = null;
+
+  constructor({ routePoint = BLANK_POINT, destinationRoutePoint = {}, allOffers, allDestinations, onFormSubmit, onEditRollUp }) {
+    super();
+    this.#routePoint = routePoint;
+    this.#destinationRoutePoint = destinationRoutePoint;
+    this.#allOffers = allOffers;
+    this.#allDestinations = allDestinations;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleEditRollUp = onEditRollUp;
+
+    this.element.addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editRollUpHandler);
   }
 
-  getTemplate() {
-    return createPointEditFormTemplate(this.routePoint, this.destinationRoutePoint, this.allOffers, this.allDestinations);
+
+  get template() {
+    return createPointEditFormTemplate(this.#routePoint, this.#destinationRoutePoint, this.#allOffers, this.#allDestinations);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #editRollUpHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditRollUp();
+  };
 }

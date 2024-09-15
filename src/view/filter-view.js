@@ -5,10 +5,10 @@ function createFilterItemTemplate(filterItem, isChecked) {
   const {type, count} = filterItem;
   return `
   <div class="trip-filters__filter">
-            <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${count===0? 'disabled': ''} ${isChecked? 'checked': ''}>
+            <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${count === 0 ? 'disabled' : ''} ${isChecked ? 'checked' : ''}>
             <label class="trip-filters__filter-label" for="filter-${type}">${capitalizeText(type)}</label>
           </div>
-  `
+  `;
 }
 
 function createFiltersListTemplate(filtersList) {

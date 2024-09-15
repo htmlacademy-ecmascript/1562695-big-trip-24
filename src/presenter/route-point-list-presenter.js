@@ -3,7 +3,7 @@ import RoutePointListView from '../view/route-point-list-view.js';
 import RoutePointView from '../view/route-point-view.js';
 import PointEditFormView from '../view/point-edit-form-view.js';
 import EmptyListView from '../view/empty-list-view.js';
-import {EMPTY_LIST_TEXT} from '../const.js'
+import {EMPTY_LIST_TEXT} from '../const.js';
 
 import { render, replace } from '../framework/render.js';
 
@@ -26,7 +26,7 @@ export default class RoutePointListPresenter {
 
   init() {
     this.#boardRoutePoints = [...this.#routePointsModel.routePoints];
-    this.#renderMainComponent()
+    this.#renderMainComponent();
   }
 
   #renderRoutePoint(routePoint) {
@@ -76,9 +76,9 @@ export default class RoutePointListPresenter {
     render(routePointComponent, this.#routePointListComponent.element);
   }
 
-  #renderMainComponent() {
-    if (this.#boardRoutePoints.length === 0) { 
-      render(this.#emptyList, this.#boardContainer)
+  #renderMainComponent(){
+    if (this.#boardRoutePoints.length === 0){
+      render(this.#emptyList, this.#boardContainer);
       return;
     }
     render(this.#sorting, this.#boardContainer);

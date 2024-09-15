@@ -16,4 +16,15 @@ const BLANK_POINT = {
 const DATE_FORMAT = 'MMM D';
 const TIME_FORMAT = 'HH:mm';
 const FULL_DATE_FORMAT = 'DD/MM/YY HH:mm';
-export {TYPES, CITIES, DESCRIPTION_TEXT, POINT_COUNT, DEFAULT_TYPE, BLANK_POINT, DATE_FORMAT, TIME_FORMAT, FULL_DATE_FORMAT};
+const EMPTY_LIST_TEXT = {
+  'EVERYTHING' : 'Click New Event to create your first point',
+  'PAST' : 'There are no past events now',
+  'PRESENT' : 'There are no present events now',
+  'FUTURE' : 'There are no future events now',
+  'LOADING' : 'Loading...',
+  'LOADING_FAILED' : 'Failed to load latest route information',
+};
+const SORT_TYPES=['day', 'event', 'time', 'price', 'offers']
+
+
+export {TYPES, CITIES, DESCRIPTION_TEXT, POINT_COUNT, DEFAULT_TYPE, BLANK_POINT, DATE_FORMAT, TIME_FORMAT, FULL_DATE_FORMAT, EMPTY_LIST_TEXT, SORT_TYPES};

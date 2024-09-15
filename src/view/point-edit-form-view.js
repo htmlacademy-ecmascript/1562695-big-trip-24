@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { capitalizeText, humanizeRoutePointDate } from '../utils.js';
+import { capitalizeText } from '../utils/common.js';
+import {humanizeRoutePointDate} from '../utils/date-format.js';
 import { TYPES, BLANK_POINT, FULL_DATE_FORMAT } from '../const';
 
 const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffers, allDestinations) => {

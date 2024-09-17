@@ -1,4 +1,4 @@
-import {getRandomArrayElement, getRandomText, getRandomInteger} from '../utils.js';
+import {getRandomArrayElement, getRandomText, getRandomInteger} from '../utils/common.js';
 import {CITIES, DESCRIPTION_TEXT} from '../const';
 
 const mockDestinations = [

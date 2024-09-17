@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { capitalizeText, humanizeRoutePointDate, calculateDiffTime} from '../utils.js';
+import { capitalizeText} from '../utils/common.js';
+import {humanizeRoutePointDate, calculateDiffTime} from '../utils/date-format.js';
 import {DATE_FORMAT, TIME_FORMAT} from '../const';
 
 const createRoutePointTemplate = (routePoint, offers, destination)=> {

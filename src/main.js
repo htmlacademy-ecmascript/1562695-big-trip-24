@@ -7,7 +7,7 @@ import {generateFilter} from './mock/filter.js';
 const siteMainElement = document.querySelector('.trip-events');
 const siteHeaderElement = document.querySelector('.trip-controls__filters');
 const routePointsModel = new RoutePointsModel();
-const RoutePointList = new RoutePointListPresenter({boardContainer: siteMainElement, routePointsModel});
+const RoutePointList = new RoutePointListPresenter({routePointsListContainer: siteMainElement, routePointsModel});
 const filtersList = generateFilter(routePointsModel.routePoints);
 
 render(new FilterView({filtersList}), siteHeaderElement);

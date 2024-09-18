@@ -19,5 +19,8 @@ function capitalizeText(text){
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
+function updateItem(items, update) {
+  return items.map((item) => item.id === update.id ? update : item);
+}
 
-export {getRandomArrayElement, getRandomInteger, getRandomText, capitalizeText};
+export {getRandomArrayElement, getRandomInteger, getRandomText, capitalizeText, updateItem};

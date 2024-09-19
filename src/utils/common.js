@@ -3,6 +3,12 @@
 function getRandomArrayElement(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
+const getRandomElements = (items) => {
+  const startFrom = Math.floor(Math.random() * items.length - 5);
+  console.log(startFrom)
+  const endTo = items.length;
+  return items.slice(startFrom, endTo);
+};
 
 function getRandomInteger(min,max){
   min = Math.ceil(min);
@@ -23,4 +29,4 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
-export {getRandomArrayElement, getRandomInteger, getRandomText, capitalizeText, updateItem};
+export {getRandomArrayElement, getRandomInteger, getRandomText, capitalizeText, updateItem, getRandomElements};

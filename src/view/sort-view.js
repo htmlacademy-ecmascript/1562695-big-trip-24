@@ -14,7 +14,7 @@ function createSortItemTemplate(type, checkedSortType){
 function createSortListTemplate(checkedSortType) {
   return (`
     <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-    ${Object.values(SORT_TYPES).map((type, index)=>createSortItemTemplate(type, checkedSortType)).join('')}
+    ${Object.values(SORT_TYPES).map((type)=>createSortItemTemplate(type, checkedSortType)).join('')}
 
     </form>`);
 }
@@ -37,7 +37,6 @@ export default class SortView extends AbstractView {
     if (evt.target.matches('input[name="trip-sort"]')) {
       return;
     }
-    console.log(evt.target.dataset.sortType)
     this.#handleSortTypeChange(evt.target.dataset.sortType);
   };
 

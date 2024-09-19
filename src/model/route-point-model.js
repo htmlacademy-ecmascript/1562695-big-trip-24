@@ -1,5 +1,5 @@
 import {getRandomPoints } from '../mock/points-route.js';
-import {POINT_COUNT, DEFAULT_TYPE} from '../const';
+import {DEFAULT_TYPE} from '../const';
 import {mockOffers} from '../mock/offers.js';
 import {mockDestinations} from '../mock/destinations.js';
 

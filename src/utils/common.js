@@ -5,7 +5,6 @@ function getRandomArrayElement(items) {
 }
 const getRandomElements = (items) => {
   const startFrom = Math.floor(Math.random() * items.length - 5);
-  console.log(startFrom)
   const endTo = items.length;
   return items.slice(startFrom, endTo);
 };

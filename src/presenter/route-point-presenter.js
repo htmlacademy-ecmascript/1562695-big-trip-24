@@ -10,12 +10,12 @@ export default class RoutePointPresenter {
   #mode = MODE.DEFAULT;
 
   #routePointComponent = null;
-  #editRoutePointComponent= null;
+  #editRoutePointComponent = null;
 
   #handleRoutePointChange = null;
-  #handleModeChange  = null;
+  #handleModeChange = null;
 
-  constructor({ routePointListComponent, routePointsModel,  onRoutePointChange, onModeChange}) {
+  constructor({ routePointListComponent, routePointsModel, onRoutePointChange, onModeChange}) {
     this.#routePointListComponent = routePointListComponent;
     this.#routePointsModel = routePointsModel;
     this.#handleRoutePointChange = onRoutePointChange;
@@ -78,7 +78,7 @@ export default class RoutePointPresenter {
     if (evt.key === 'Escape') {
       evt.preventDefault();
       this.#replaceFormToRoutePoint();
-      document.removeEventListener('keydown', escKeyDownHandler);
+      document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
   };
 
@@ -92,20 +92,17 @@ export default class RoutePointPresenter {
     replace(this.#editRoutePointComponent, this.#routePointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
     this.#handleModeChange();
-    this.#mode = MODE.EDITING
+    this.#mode = MODE.EDITING;
   }
-
-
 
   #showEditorPoint = () =>{
     this.#replaceRoutePointToForm();
-
-  }
+  };
 
   #hideEditorPoint = (routePoint) => {
     this.#handleRoutePointChange(routePoint);
     this.#replaceFormToRoutePoint();
-  }
+  };
 
   #handleFavoriteClick = () => {
     this.#handleRoutePointChange({...this.#routePoint, isFavorite: !this.#routePoint.isFavorite});

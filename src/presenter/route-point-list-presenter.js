@@ -2,7 +2,7 @@ import SortView from '../view/sort-view.js';
 import RoutePointListView from '../view/route-point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import {EMPTY_LIST_TEXT, SORT_TYPES} from '../const.js';
-import RoutePointPresenter from './route-point-presenter.js'
+import RoutePointPresenter from './route-point-presenter.js';
 import {updateItem} from '../utils/common.js';
 import {sortByPrice, sortByTime} from '../utils/sorting.js';
 import { render } from '../framework/render.js';
@@ -38,10 +38,9 @@ export default class RoutePointListPresenter {
       routePointsModel : this.#routePointsModel,
       onRoutePointChange: this.#handleRoutePointChange,
       onModeChange: this.#handleModeChange,
-    })
+    });
     routePointPresenter.init(routePoint);
     this.#routePointsPresenters.set(routePoint.id, routePointPresenter);
-    console.log( this.#routePointsPresenters)
   }
 
   #renderListEmpty(){
@@ -82,6 +81,7 @@ export default class RoutePointListPresenter {
     this.#sourcedRoutePoints = updateItem(this.#sourcedRoutePoints, updatedRoutePoint);
     this.#routePointsPresenters.get(updatedRoutePoint.id).init(updatedRoutePoint);
   };
+
   #handleModeChange = () => {
     this.#routePointsPresenters.forEach((presenter) => presenter.resetView());
   };

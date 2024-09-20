@@ -85,7 +85,6 @@ export default class RoutePointListPresenter {
   };
 
   #sortRoutePoints(sortType) {
-    console.log(sortType)
     switch (sortType) {
       case SORT_TYPES.TIME:
         this.#routePointsList.sort(sortByTime);
@@ -94,7 +93,7 @@ export default class RoutePointListPresenter {
         this.#routePointsList.sort(sortByPrice);
         break;
       default:
-        this.#routePointsList =  this.#routePointsList.sort(sortByDay);
+        this.#routePointsList = this.#routePointsList.sort(sortByDay);
     }
   }
 

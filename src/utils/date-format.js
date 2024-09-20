@@ -7,6 +7,7 @@ dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
 function humanizeRoutePointDate(routePointDate, FORMAT_TO_DATE) {
+  console.log(dayjs(routePointDate).format('DD/MM/YY HH:mm'))
   return routePointDate ? dayjs(routePointDate).format(FORMAT_TO_DATE) : '';
 }
 

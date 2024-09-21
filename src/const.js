@@ -24,7 +24,16 @@ const EMPTY_LIST_TEXT = {
   'LOADING' : 'Loading...',
   'LOADING_FAILED' : 'Failed to load latest route information',
 };
-const SORT_TYPES = ['day', 'event', 'time', 'price', 'offers'];
+const SORT_TYPES = {
+  DAY: 'Day',
+  EVENT: 'Event',
+  TIME: 'Time',
+  PRICE: 'Price',
+  OFFERS: 'Offers'
+};
+const MODE = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
 
-
-export {TYPES, CITIES, DESCRIPTION_TEXT, POINT_COUNT, DEFAULT_TYPE, BLANK_POINT, DATE_FORMAT, TIME_FORMAT, FULL_DATE_FORMAT, EMPTY_LIST_TEXT, SORT_TYPES};
+export {TYPES, CITIES, DESCRIPTION_TEXT, POINT_COUNT, DEFAULT_TYPE, BLANK_POINT, DATE_FORMAT, TIME_FORMAT, FULL_DATE_FORMAT, EMPTY_LIST_TEXT, SORT_TYPES, MODE};

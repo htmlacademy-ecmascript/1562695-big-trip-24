@@ -1,7 +1,8 @@
-import {getRandomArrayElement, getRandomInteger} from '../utils/common.js';
+import {getRandomElements , getRandomInteger} from '../utils/common.js';
 
 const mockPoints = [
   {
+    id: 1,
     type: 'taxi',
     basePrice: getRandomInteger(1, 500),
     destination: getRandomInteger(1, 5),
@@ -13,6 +14,7 @@ const mockPoints = [
     ]
   },
   {
+    id: 2,
     type: 'restaurant',
     basePrice: getRandomInteger(1, 500),
     destination: getRandomInteger(1, 5),
@@ -24,6 +26,7 @@ const mockPoints = [
     ]
   },
   {
+    id: 3,
     type: 'sightseeing',
     basePrice: getRandomInteger(1, 500),
     destination: getRandomInteger(1, 5),
@@ -35,6 +38,7 @@ const mockPoints = [
     ]
   },
   {
+    id: 4,
     type: 'flight',
     basePrice: getRandomInteger(1, 500),
     destination: getRandomInteger(1, 5),
@@ -46,6 +50,7 @@ const mockPoints = [
     ]
   },
   {
+    id: 5,
     type: 'drive',
     basePrice: getRandomInteger(1, 500),
     destination: getRandomInteger(1, 5),
@@ -57,6 +62,7 @@ const mockPoints = [
     ]
   },
   {
+    id: 6,
     type: 'sightseeing',
     basePrice: getRandomInteger(1, 500),
     destination: getRandomInteger(1, 5),
@@ -69,8 +75,6 @@ const mockPoints = [
   },
 ];
 
-function getRandomPoint() {
-  return getRandomArrayElement(mockPoints);
-}
+const getRandomPoints = getRandomElements(mockPoints);
 
-export {getRandomPoint};
+export {getRandomPoints};

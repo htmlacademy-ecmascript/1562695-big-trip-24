@@ -145,11 +145,11 @@ export default class PointEditFormView extends AbstractView{
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit();
+    this.#handleFormSubmit(this.#routePoint);
   };
 
   #editRollUpHandler = (evt) => {
     evt.preventDefault();
-    this.#handleEditRollUp();
+    this.#handleEditRollUp(this.#routePoint);
   };
 }

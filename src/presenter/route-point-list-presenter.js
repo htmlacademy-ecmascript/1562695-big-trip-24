@@ -1,94 +1,111 @@
 import SortView from '../view/sort-view.js';
 import RoutePointListView from '../view/route-point-list-view.js';
-import RoutePointView from '../view/route-point-view.js';
-import PointEditFormView from '../view/point-edit-form-view.js';
 import EmptyListView from '../view/empty-list-view.js';
-import {EMPTY_LIST_TEXT} from '../const.js';
-
-import { render, replace } from '../framework/render.js';
+import {EMPTY_LIST_TEXT, SORT_TYPES} from '../const.js';
+import RoutePointPresenter from './route-point-presenter.js';
+import {updateItem} from '../utils/common.js';
+import {sortByPrice, sortByTime} from '../utils/sorting.js';
+import { render } from '../framework/render.js';
 
 export default class RoutePointListPresenter {
-
-  #boardContainer = null;
+  #routePointsListContainer = null;
   #routePointsModel = null;
+  #sorting = null;
 
+  #routePointsList = [];
+  #sourcedRoutePoints = [];
+
+  #routePointsPresenters = new Map();
   #routePointListComponent = new RoutePointListView();
-  #sorting = new SortView();
+  //#sorting = new SortView();
   #emptyList = new EmptyListView(EMPTY_LIST_TEXT.EVERYTHING);
+  #defaultSortType = SORT_TYPES.DAY;
 
-  #boardRoutePoints = [];
-
-
-  constructor({ boardContainer, routePointsModel }) {
-    this.#boardContainer = boardContainer;
+  constructor({ routePointsListContainer, routePointsModel }) {
+    this.#routePointsListContainer = routePointsListContainer;
     this.#routePointsModel = routePointsModel;
   }
 
   init() {
-    this.#boardRoutePoints = [...this.#routePointsModel.routePoints];
+    this.#routePointsList = [...this.#routePointsModel.routePoints];
+    this.#sourcedRoutePoints = [...this.#routePointsModel.routePoints];
     this.#renderMainComponent();
   }
 
-  #renderRoutePoint(routePoint) {
-
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceFormToRoutePoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    const showEditorPoint = () => {
-      replaceRoutePointToForm();
-      document.addEventListener('keydown', escKeyDownHandler);
-    };
-
-    const hideEditorPoint = () => {
-      replaceFormToRoutePoint();
-      document.removeEventListener('keydown', escKeyDownHandler);
-    };
-
-    const routePointComponent = new RoutePointView({
-      routePoint,
-      offers: [...this.#routePointsModel.getOffersById(routePoint.type, routePoint.offers)],
-      destination: this.#routePointsModel.getDestinationsById(routePoint.destination),
-      onEditClick: () => showEditorPoint()
+  #renderRoutePoint(routePoint){
+    const routePointPresenter = new RoutePointPresenter({
+      routePointListComponent : this.#routePointListComponent.element,
+      routePointsModel : this.#routePointsModel,
+      onRoutePointChange: this.#handleRoutePointChange,
+      onModeChange: this.#handleModeChange,
     });
+    routePointPresenter.init(routePoint);
+    this.#routePointsPresenters.set(routePoint.id, routePointPresenter);
+  }
 
-    const editRoutePointComponent = new PointEditFormView({
-      routePoint,
-      destinationRoutePoint: this.#routePointsModel.getDestinationsById(this.#boardRoutePoints[0].destination),
-      allOffers: this.#routePointsModel.getOffersByType(this.#boardRoutePoints[0].type),
-      allDestinations: this.#routePointsModel.destinations,
-      onFormSubmit: () => hideEditorPoint(),
-      onEditRollUp: () => hideEditorPoint(),
+  #renderListEmpty(){
+    render(this.#emptyList, this.#routePointsListContainer);
+  }
+
+  #renderSorting(){
+    this.#sorting = new SortView({
+      checkedSortType: this.#defaultSortType,
+      onSortTypeChange: this.#handleSortTypeChange
     });
+    render(this.#sorting, this.#routePointsListContainer);
+  }
 
-    function replaceRoutePointToForm() {
-      replace(editRoutePointComponent, routePointComponent);
+  #renderRoutePointsList(){
+    render(this.#routePointListComponent, this.#routePointsListContainer);
+    for (let i = 0; i < this.#routePointsList.length; i++) {
+      this.#renderRoutePoint(this.#routePointsList[i]);
     }
-
-    function replaceFormToRoutePoint() {
-      replace(routePointComponent, editRoutePointComponent);
-    }
-
-    render(routePointComponent, this.#routePointListComponent.element);
   }
 
   #renderMainComponent(){
-    if (this.#boardRoutePoints.length === 0){
-      render(this.#emptyList, this.#boardContainer);
+    if (this.#routePointsList.length === 0){
+      this.#renderListEmpty();
       return;
     }
-    render(this.#sorting, this.#boardContainer);
-    render(this.#routePointListComponent, this.#boardContainer);
-    // render(new PointEditFormView({
-    //   allOffers:this.routePointsModel.getOffersByType(),
-    //   allDestinations:this.routePointsModel.getDestinations()
-    // }), this.routePointListComponent.getElement());
-    for (let i = 0; i < this.#boardRoutePoints.length; i++) {
-      this.#renderRoutePoint(this.#boardRoutePoints[i]);
+    this.#renderSorting();
+    this.#renderRoutePointsList();
+  }
+
+  #clearRoutePointsList(){
+    this.#routePointsPresenters.forEach((presenter) => presenter.destroy());
+    this.#routePointsPresenters.clear();
+  }
+
+  #handleRoutePointChange = (updatedRoutePoint) => {
+    this.#routePointsList = updateItem(this.#routePointsList, updatedRoutePoint);
+    this.#sourcedRoutePoints = updateItem(this.#sourcedRoutePoints, updatedRoutePoint);
+    this.#routePointsPresenters.get(updatedRoutePoint.id).init(updatedRoutePoint);
+  };
+
+  #handleModeChange = () => {
+    this.#routePointsPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #sortRoutePoints(sortType) {
+    switch (sortType) {
+      case SORT_TYPES.TIME:
+        this.#routePointsList.sort(sortByTime);
+        break;
+      case SORT_TYPES.PRICE:
+        this.#routePointsList.sort(sortByPrice);
+        break;
+      default:
+        this.#routePointsList = [...this.#sourcedRoutePoints];
     }
   }
+
+  #handleSortTypeChange = (checkedSortType) => {
+    if (this.#defaultSortType === checkedSortType) {
+      return;
+    }
+    this.#defaultSortType = checkedSortType;
+    this.#sortRoutePoints(checkedSortType);
+    this.#clearRoutePointsList();
+    this.#renderRoutePointsList();
+  };
 }

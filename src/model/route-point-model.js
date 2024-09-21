@@ -1,10 +1,10 @@
-import {getRandomPoint} from '../mock/points-route.js';
-import {POINT_COUNT, DEFAULT_TYPE} from '../const';
+import {getRandomPoints } from '../mock/points-route.js';
+import {DEFAULT_TYPE} from '../const';
 import {mockOffers} from '../mock/offers.js';
 import {mockDestinations} from '../mock/destinations.js';
 
 export default class RoutePointsModel {
-  #points = Array.from({length: POINT_COUNT}, getRandomPoint);
+  #points = getRandomPoints;
   #offers = mockOffers;
   #destinations = mockDestinations;
 

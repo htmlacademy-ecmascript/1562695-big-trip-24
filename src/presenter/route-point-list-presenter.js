@@ -4,7 +4,7 @@ import EmptyListView from '../view/empty-list-view.js';
 import {EMPTY_LIST_TEXT, SORT_TYPES} from '../const.js';
 import RoutePointPresenter from './route-point-presenter.js';
 import {updateItem} from '../utils/common.js';
-import {sortByPrice, sortByTime} from '../utils/sorting.js';
+import {sortByPrice, sortByTime, sortByDay} from '../utils/sorting.js';
 import { render } from '../framework/render.js';
 
 export default class RoutePointListPresenter {
@@ -27,8 +27,7 @@ export default class RoutePointListPresenter {
   }
 
   init() {
-    this.#routePointsList = [...this.#routePointsModel.routePoints];
-    this.#sourcedRoutePoints = [...this.#routePointsModel.routePoints];
+    this.#routePointsList = [...this.#routePointsModel.routePoints].sort(sortByDay);
     this.#renderMainComponent();
   }
 
@@ -78,7 +77,6 @@ export default class RoutePointListPresenter {
 
   #handleRoutePointChange = (updatedRoutePoint) => {
     this.#routePointsList = updateItem(this.#routePointsList, updatedRoutePoint);
-    this.#sourcedRoutePoints = updateItem(this.#sourcedRoutePoints, updatedRoutePoint);
     this.#routePointsPresenters.get(updatedRoutePoint.id).init(updatedRoutePoint);
   };
 
@@ -95,7 +93,7 @@ export default class RoutePointListPresenter {
         this.#routePointsList.sort(sortByPrice);
         break;
       default:
-        this.#routePointsList = [...this.#sourcedRoutePoints];
+        this.#routePointsList = this.#routePointsList.sort(sortByDay);
     }
   }
 

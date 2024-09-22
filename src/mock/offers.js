@@ -87,9 +87,6 @@ const mockOffers = [
       },
     ],
   },
-
-  
-
 ];
 
 export {mockOffers};

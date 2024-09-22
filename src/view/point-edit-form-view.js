@@ -5,7 +5,6 @@ import { TYPES, BLANK_POINT, FULL_DATE_FORMAT } from '../const';
 
 const createPointEditFormTemplate = (state, allDestinations) => {
   const { basePrice, type, dateFrom, dateTo, offers, typeOffers, destination } = state;
-  console.log(typeOffers)
   const typeName = capitalizeText(type);
   const startTime = humanizeRoutePointDate(dateFrom, FULL_DATE_FORMAT);
   const endTime = humanizeRoutePointDate(dateTo, FULL_DATE_FORMAT);
@@ -66,7 +65,7 @@ const createPointEditFormTemplate = (state, allDestinations) => {
                     <label class="event__label  event__type-output" for="event-destination-1">
                       ${typeName}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name? name : ''}" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name ? name : ''}" list="destination-list-1">
                     <datalist id="destination-list-1">
                       ${createAllDestinationsTemplate}
                     </datalist>

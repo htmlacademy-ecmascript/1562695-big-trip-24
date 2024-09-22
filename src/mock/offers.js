@@ -17,41 +17,23 @@ const mockOffers = [
     ],
   },
   {
+    type: 'bus',
+    offers: []
+  },
+  {
+    type: 'train',
+    offers: []
+  },
+  {
+    type: 'ship',
+    offers: []
+  },
+  {
     type: 'drive',
     offers: [
       {
         id: '1',
         title: 'Rent a car',
-        price: getRandomInteger(1, 500),
-      },
-    ],
-  },
-  {
-    type: 'restaurant',
-    offers: [
-      {
-        id: '1',
-        title: 'Add breakfast',
-        price: getRandomInteger(1, 500),
-      },
-      {
-        id: '2',
-        title: 'Add dinner',
-        price: getRandomInteger(1, 500),
-      },
-    ],
-  },
-  {
-    type: 'sightseeing',
-    offers: [
-      {
-        id: '1',
-        title: 'Book tickets',
-        price: getRandomInteger(1, 500),
-      },
-      {
-        id: '2',
-        title: 'Lunch in city',
         price: getRandomInteger(1, 500),
       },
     ],
@@ -71,6 +53,42 @@ const mockOffers = [
       },
     ],
   },
+  {
+    type: 'check-in',
+    offers: []
+  },
+  {
+    type: 'sightseeing',
+    offers: [
+      {
+        id: '1',
+        title: 'Book tickets',
+        price: getRandomInteger(1, 500),
+      },
+      {
+        id: '2',
+        title: 'Lunch in city',
+        price: getRandomInteger(1, 500),
+      },
+    ],
+  },
+  {
+    type: 'restaurant',
+    offers: [
+      {
+        id: '1',
+        title: 'Add breakfast',
+        price: getRandomInteger(1, 500),
+      },
+      {
+        id: '2',
+        title: 'Add dinner',
+        price: getRandomInteger(1, 500),
+      },
+    ],
+  },
+
+  
 
 ];
 

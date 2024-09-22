@@ -36,11 +36,13 @@ export default class RoutePointPresenter {
       onFavoriteClick: this.#handleFavoriteClick,
     });
 
+
     this.#editRoutePointComponent = new PointEditFormView({
       routePoint: this.#routePoint,
       destinationRoutePoint: this.#routePointsModel.getDestinationsById(this.#routePoint.destination),
-      allOffers: this.#routePointsModel.getOffersByType(this.#routePoint.type),
+      typeOffers: this.#routePointsModel.getOffersByType(this.#routePoint.type),
       allDestinations: this.#routePointsModel.destinations,
+      allOffers: this.#routePointsModel.offers,
       onFormSubmit: this.#hideEditorPoint,
       onEditRollUp: this.#hideEditorPoint,
     });
@@ -65,6 +67,7 @@ export default class RoutePointPresenter {
   resetView() {
 
     if (this.#mode !== MODE.DEFAULT) {
+      this.#editRoutePointComponent.reset();
       this.#replaceFormToRoutePoint();
     }
   }
@@ -77,6 +80,7 @@ export default class RoutePointPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#editRoutePointComponent.reset();
       this.#replaceFormToRoutePoint();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }

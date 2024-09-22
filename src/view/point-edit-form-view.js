@@ -2,6 +2,8 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { capitalizeText } from '../utils/common.js';
 import {humanizeRoutePointDate} from '../utils/date-format.js';
 import { TYPES, BLANK_POINT, FULL_DATE_FORMAT } from '../const';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const createPointEditFormTemplate = (state, allDestinations) => {
   const { basePrice, type, dateFrom, dateTo, offers, typeOffers, destination } = state;
@@ -124,6 +126,8 @@ export default class PointEditFormView extends AbstractStatefulView{
   #handleFormSubmit = null;
   #handleEditRollUp = null;
   #initialRoutePoint = null;
+  #datepickerStart = null;
+  #datepickerEnd = null;
 
   constructor({ routePoint = BLANK_POINT, destinationRoutePoint = {}, typeOffers, allDestinations, allOffers, onFormSubmit, onEditRollUp }) {
     super();
@@ -148,6 +152,20 @@ export default class PointEditFormView extends AbstractStatefulView{
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeListChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+    this.#setDatepickerStart();
+    this.#setDatepickerEnd();
+  }
+
+  removeElement() {
+    super.removeElement();
+    if (this.#datepickerStart) {
+      this.#datepickerStart.destroy();
+      this.#datepickerStart = null;
+    }
+    if (this.#datepickerEnd) {
+      this.#datepickerEnd.destroy();
+      this.#datepickerEnd = null;
+    }
   }
 
   reset() {
@@ -165,6 +183,18 @@ export default class PointEditFormView extends AbstractStatefulView{
   #editRollUpHandler = (evt) => {
     evt.preventDefault();
     this.#handleEditRollUp(PointEditFormView.parseStateToRoutePoint(this.#initialRoutePoint));
+  };
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this._setState({
+      dateFrom: userDate,
+    });
+  };
+
+  #dateToChangeHandler = ([userDate]) => {
+    this._setState({
+      dateTo: userDate,
+    });
   };
 
   #destinationChangeHandler = (evt) => {
@@ -196,6 +226,34 @@ export default class PointEditFormView extends AbstractStatefulView{
       basePrice: newPrice
     });
   };
+
+  #setDatepickerStart() {
+    this.#datepickerStart = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.dateFrom,
+        onChange: this.#dateFromChangeHandler,
+        maxDate: this._state.dateTo,
+      }
+    );
+  }
+
+  #setDatepickerEnd() {
+    this.#datepickerEnd = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.dateTo,
+        onChange: this.#dateToChangeHandler,
+        minDate: this._state.dateFrom,
+      }
+    );
+  }
 
   static parseRouteToState(routePoint, destinationRoutePoint, typeOffers) {
     return {

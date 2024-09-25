@@ -1,13 +1,15 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { capitalizeText } from '../utils/common.js';
 import {humanizeRoutePointDate} from '../utils/date-format.js';
 import { TYPES, BLANK_POINT, FULL_DATE_FORMAT } from '../const';
 
-const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffers, allDestinations) => {
-  const { basePrice, type, dateFrom, dateTo } = routePoint;
+const createPointEditFormTemplate = (state, allDestinations) => {
+  const { basePrice, type, dateFrom, dateTo, offers, typeOffers, destination } = state;
   const typeName = capitalizeText(type);
   const startTime = humanizeRoutePointDate(dateFrom, FULL_DATE_FORMAT);
   const endTime = humanizeRoutePointDate(dateTo, FULL_DATE_FORMAT);
+  const roitePointDestination = allDestinations.find((item) => item.id === destination);
+  const { name, description, pictures } = roitePointDestination;
   const createTypeItemTemplate = (typeItem, isCheckedTypeItem) =>
     `
       <div class="event__type-item">
@@ -33,14 +35,14 @@ const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffer
     return createTypeItemTemplate(typeItem, isCheckedTypeItem);
   }).join('');
 
-  const createAllOffersTemplate = allOffers.offers.map((offerItem) => {
-    const isCheckedOfferItem = routePoint.offers.includes(offerItem.id);
+  const createAllOffersTemplate = typeOffers.offers.map((offerItem) => {
+    const isCheckedOfferItem = offers.includes(offerItem.id);
     return createOfferItemTemplate(offerItem, isCheckedOfferItem);
   }).join('');
 
   const createAllDestinationsTemplate = allDestinations.map((desctinationItem) => `<option value="${desctinationItem.name}"></option>`).join('');
 
-  const createPhotoesTemplate = (destinationRoutePoint && destinationRoutePoint.pictures ? destinationRoutePoint.pictures.map((pictureItem) => `<img class="event__photo" src="${pictureItem.src}" alt="Event photo">`).join('') : '');
+  const createPhotoesTemplate = (pictures ? pictures.map((pictureItem) => `<img class="event__photo" src="${pictureItem.src}" alt="Event photo">`).join('') : '');
   return `(
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
@@ -63,7 +65,7 @@ const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffer
                     <label class="event__label  event__type-output" for="event-destination-1">
                       ${typeName}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationRoutePoint && destinationRoutePoint.name ? destinationRoutePoint.name : ''}" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name ? name : ''}" list="destination-list-1">
                     <datalist id="destination-list-1">
                       ${createAllDestinationsTemplate}
                     </datalist>
@@ -92,17 +94,17 @@ const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffer
                   </button>
                 </header>
                 <section class="event__details">
-                  ${allOffers.offers.length > 0 ? `
+                  ${typeOffers.offers.length > 0 ? `
                     <section class="event__section  event__section--offers">
                       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
                       <div class="event__available-offers">
                         ${createAllOffersTemplate}
                       </div>
                     </section>` : ''}
-                  ${destinationRoutePoint && (destinationRoutePoint.description || createPhotoesTemplate.length > 0) ? `
+                  ${(description || createPhotoesTemplate.length > 0) ? `
                     <section class="event__section  event__section--destination">
                       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                      <p class="event__destination-description">${destinationRoutePoint.description}</p>
+                      <p class="event__destination-description">${description}</p>
                      ${createPhotoesTemplate.length > 0 ? `
                       <div class="event__photos-container">
                         <div class="event__photos-tape">
@@ -115,41 +117,96 @@ const createPointEditFormTemplate = (routePoint, destinationRoutePoint, allOffer
   )`;
 };
 
-export default class PointEditFormView extends AbstractView{
-  #routePoint = null;
-  #destinationRoutePoint = null;
-
-  #allOffers = [];
+export default class PointEditFormView extends AbstractStatefulView{
   #allDestinations = [];
+  #allOffers = [];
 
   #handleFormSubmit = null;
   #handleEditRollUp = null;
+  #initialRoutePoint = null;
 
-  constructor({ routePoint = BLANK_POINT, destinationRoutePoint = {}, allOffers, allDestinations, onFormSubmit, onEditRollUp }) {
+  constructor({ routePoint = BLANK_POINT, destinationRoutePoint = {}, typeOffers, allDestinations, allOffers, onFormSubmit, onEditRollUp }) {
     super();
-    this.#routePoint = routePoint;
-    this.#destinationRoutePoint = destinationRoutePoint;
-    this.#allOffers = allOffers;
+    this.#initialRoutePoint = routePoint;
+    this._setState(PointEditFormView.parseRouteToState(routePoint, destinationRoutePoint.id, typeOffers));
     this.#allDestinations = allDestinations;
+    this.#allOffers = allOffers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleEditRollUp = onEditRollUp;
+    this._restoreHandlers();
 
-    this.element.addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editRollUpHandler);
   }
 
 
   get template() {
-    return createPointEditFormTemplate(this.#routePoint, this.#destinationRoutePoint, this.#allOffers, this.#allDestinations);
+    return createPointEditFormTemplate(this._state, this.#allDestinations);
+  }
+
+  _restoreHandlers() {
+    this.element.addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editRollUpHandler);
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeListChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+  }
+
+  reset() {
+    this.updateElement({
+      ...this.#initialRoutePoint,
+      typeOffers: this.#allOffers.find((offer) => offer.type === this.#initialRoutePoint.type),
+    });
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this.#routePoint);
+    this.#handleFormSubmit(PointEditFormView.parseStateToRoutePoint(this._state));
   };
 
   #editRollUpHandler = (evt) => {
     evt.preventDefault();
-    this.#handleEditRollUp(this.#routePoint);
+    this.#handleEditRollUp(PointEditFormView.parseStateToRoutePoint(this.#initialRoutePoint));
   };
+
+  #destinationChangeHandler = (evt) => {
+    evt.preventDefault();
+    const targetDestination = evt.target.value;
+    const newDestination = this.#allDestinations.find((item) => item.name === targetDestination);
+    this.updateElement({
+      destination: newDestination.id,
+      description: newDestination.description,
+      name: newDestination.name,
+      pictures: newDestination.pictures,
+    });
+  };
+
+  #typeListChangeHandler = (evt) => {
+    evt.preventDefault();
+    const targetType = evt.target.value;
+    const typeOffers = this.#allOffers.find((item) => item.type === targetType);
+    this.updateElement({
+      type: targetType,
+      typeOffers: typeOffers,
+    });
+  };
+
+  #priceInputHandler = (evt) => {
+    evt.preventDefault();
+    const newPrice = evt.target.value;
+    this._setState({
+      basePrice: newPrice
+    });
+  };
+
+  static parseRouteToState(routePoint, destinationRoutePoint, typeOffers) {
+    return {
+      ...routePoint,
+      destination: destinationRoutePoint,
+      typeOffers
+    };
+  }
+
+  static parseStateToRoutePoint(state) {
+    const routePoint = {...state};
+    return routePoint;
+  }
 }

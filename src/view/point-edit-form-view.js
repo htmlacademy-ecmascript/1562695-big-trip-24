@@ -1,7 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { capitalizeText } from '../utils/common.js';
 import {humanizeRoutePointDate} from '../utils/date-format.js';
-import { TYPES, BLANK_POINT, FULL_DATE_FORMAT } from '../const';
+import { TYPES, BlankPoint, FULL_DATE_FORMAT } from '../const';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -129,7 +129,7 @@ export default class PointEditFormView extends AbstractStatefulView{
   #datepickerStart = null;
   #datepickerEnd = null;
 
-  constructor({ routePoint = BLANK_POINT, destinationRoutePoint = {}, typeOffers, allDestinations, allOffers, onFormSubmit, onEditRollUp }) {
+  constructor({ routePoint = BlankPoint, destinationRoutePoint = {}, typeOffers, allDestinations, allOffers, onFormSubmit, onEditRollUp }) {
     super();
     this.#initialRoutePoint = routePoint;
     this._setState(PointEditFormView.parseRouteToState(routePoint, destinationRoutePoint.id, typeOffers));

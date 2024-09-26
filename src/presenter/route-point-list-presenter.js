@@ -1,11 +1,10 @@
 import SortView from '../view/sort-view.js';
 import RoutePointListView from '../view/route-point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
-import {EMPTY_LIST_TEXT, SORT_TYPES} from '../const.js';
+import {EmptyListText, SortType, UpdateType, UserAction} from '../const.js';
 import RoutePointPresenter from './route-point-presenter.js';
-import {updateItem} from '../utils/common.js';
 import {sortByPrice, sortByTime, sortByDay} from '../utils/sorting.js';
-import { render } from '../framework/render.js';
+import { render, remove } from '../framework/render.js';
 
 export default class RoutePointListPresenter {
   #routePointsListContainer = null;
@@ -13,29 +12,81 @@ export default class RoutePointListPresenter {
   #sorting = null;
 
   #routePointsList = [];
-  #sourcedRoutePoints = [];
 
   #routePointsPresenters = new Map();
   #routePointListComponent = new RoutePointListView();
   //#sorting = new SortView();
-  #emptyList = new EmptyListView(EMPTY_LIST_TEXT.EVERYTHING);
-  #defaultSortType = SORT_TYPES.DAY;
+  #emptyList = new EmptyListView(EmptyListText.EVERYTHING);
+  #currentSortType = SortType.DAY;
 
   constructor({ routePointsListContainer, routePointsModel }) {
     this.#routePointsListContainer = routePointsListContainer;
     this.#routePointsModel = routePointsModel;
+
+    this.#routePointsModel.addObserver(this.#handleModelEvent);
+  }
+
+  get routePoints() {
+    switch (this.#currentSortType) {
+      case SortType.TIME:
+        return [...this.#routePointsModel.routePoints].sort(sortByTime);
+      case SortType.PRICE:
+        return  [...this.#routePointsModel.routePoints].sort(sortByPrice);
+    }
+    return [...this.#routePointsModel.routePoints].sort(sortByDay);
   }
 
   init() {
-    this.#routePointsList = [...this.#routePointsModel.routePoints].sort(sortByDay);
+    // this.#routePointsList = [...this.#routePointsModel.routePoints].sort(sortByDay);
     this.#renderMainComponent();
+  }
+
+  #handleViewAction = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this.#routePointsModel.updateRoutePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this.#routePointsModel.addRoutePoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this.#routePointsModel.deleteRoutePoint(updateType, update);
+        break;
+    }
+  };
+  #handleModelEvent = (updateType, data) => {
+    console.log(updateType, data);
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#routePointsPresenters.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        this.#clearPage();
+        this.#renderMainComponent();
+        break;
+      case UpdateType.MAJOR:
+        this.#clearPage({resetSortType: true});
+        this.#renderMainComponent();
+        break;
+    }
+  };
+
+  #clearPage({resetSortType = false} = {}) {
+    this.#routePointsPresenters.forEach((presenter) => presenter.destroy());
+    this.#routePointsPresenters.clear();
+    remove(this.#sorting);
+    remove(this.#emptyList);
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
   }
 
   #renderRoutePoint(routePoint){
     const routePointPresenter = new RoutePointPresenter({
       routePointListComponent : this.#routePointListComponent.element,
       routePointsModel : this.#routePointsModel,
-      onRoutePointChange: this.#handleRoutePointChange,
+      onRoutePointChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange,
     });
     routePointPresenter.init(routePoint);
@@ -48,7 +99,7 @@ export default class RoutePointListPresenter {
 
   #renderSorting(){
     this.#sorting = new SortView({
-      checkedSortType: this.#defaultSortType,
+      checkedSortType: this.#currentSortType,
       onSortTypeChange: this.#handleSortTypeChange
     });
     render(this.#sorting, this.#routePointsListContainer);
@@ -56,13 +107,11 @@ export default class RoutePointListPresenter {
 
   #renderRoutePointsList(){
     render(this.#routePointListComponent, this.#routePointsListContainer);
-    for (let i = 0; i < this.#routePointsList.length; i++) {
-      this.#renderRoutePoint(this.#routePointsList[i]);
-    }
+    this.routePoints.forEach((point) => this.#renderRoutePoint(point));
   }
 
   #renderMainComponent(){
-    if (this.#routePointsList.length === 0){
+    if (this.routePoints.length === 0){
       this.#renderListEmpty();
       return;
     }
@@ -75,34 +124,16 @@ export default class RoutePointListPresenter {
     this.#routePointsPresenters.clear();
   }
 
-  #handleRoutePointChange = (updatedRoutePoint) => {
-    this.#routePointsList = updateItem(this.#routePointsList, updatedRoutePoint);
-    this.#routePointsPresenters.get(updatedRoutePoint.id).init(updatedRoutePoint);
-  };
-
   #handleModeChange = () => {
     this.#routePointsPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #sortRoutePoints(sortType) {
-    switch (sortType) {
-      case SORT_TYPES.TIME:
-        this.#routePointsList.sort(sortByTime);
-        break;
-      case SORT_TYPES.PRICE:
-        this.#routePointsList.sort(sortByPrice);
-        break;
-      default:
-        this.#routePointsList = this.#routePointsList.sort(sortByDay);
-    }
-  }
 
-  #handleSortTypeChange = (checkedSortType) => {
-    if (this.#defaultSortType === checkedSortType) {
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
       return;
     }
-    this.#defaultSortType = checkedSortType;
-    this.#sortRoutePoints(checkedSortType);
+    this.#currentSortType = sortType;
     this.#clearRoutePointsList();
     this.#renderRoutePointsList();
   };

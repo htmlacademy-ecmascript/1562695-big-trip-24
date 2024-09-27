@@ -2,6 +2,7 @@ import RoutePointView from '../view/route-point-view.js';
 import PointEditFormView from '../view/point-edit-form-view.js';
 import {remove, render, replace } from '../framework/render.js';
 import { Mode, UpdateType, UserAction } from '../const.js';
+import { isDatesSame } from '../utils/date-format.js';
 
 export default class RoutePointPresenter {
   #routePointListComponent = null;
@@ -45,6 +46,7 @@ export default class RoutePointPresenter {
       allOffers: this.#routePointsModel.offers,
       onFormSubmit: this.#hideEditorPoint,
       onEditRollUp: this.#hideEditorPoint,
+      onDeleteClick: this.#handleDeleteClick,
     });
 
     if (prevRoutePointComponent === null || prevRoutePointEditComponent === null) {
@@ -103,11 +105,12 @@ export default class RoutePointPresenter {
     this.#replaceRoutePointToForm();
   };
 
-  #hideEditorPoint = (routePoint) => {
+  #hideEditorPoint = (update) => {
+    const isPatchUpdate = isDatesSame(this.#routePoint.dateFrom, update.dateFrom) && isDatesSame(this.#routePoint.dateTo, update.dateTo);
     this.#handleRoutePointChange(      
       UserAction.UPDATE_POINT,
-      UpdateType.MINOR,
-      routePoint
+      isPatchUpdate ? UpdateType.PATCH : UpdateType.MINOR,
+      update
     );
     this.#replaceFormToRoutePoint();
   };
@@ -117,6 +120,13 @@ export default class RoutePointPresenter {
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
       {...this.#routePoint, isFavorite: !this.#routePoint.isFavorite}
+    );
+  };
+  #handleDeleteClick = (routePoint) => {
+    this.#handleRoutePointChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      routePoint,
     );
   };
 }

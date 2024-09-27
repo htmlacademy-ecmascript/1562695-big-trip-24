@@ -128,15 +128,17 @@ export default class PointEditFormView extends AbstractStatefulView{
   #initialRoutePoint = null;
   #datepickerStart = null;
   #datepickerEnd = null;
+  #handleDeleteClick = null;
 
-  constructor({ routePoint = BlankPoint, destinationRoutePoint = {}, typeOffers, allDestinations, allOffers, onFormSubmit, onEditRollUp }) {
+  constructor({ routePoint = BlankPoint, destinationRoutePoint = {}, typeOffers, allDestinations, allOffers, onFormSubmit, onEditRollUp, onDeleteClick}) {
     super();
     this.#initialRoutePoint = routePoint;
-    this._setState(PointEditFormView.parseRouteToState(routePoint, destinationRoutePoint.id, typeOffers));
+    this._setState(PointEditFormView.parseRoutePointToState(routePoint, destinationRoutePoint.id, typeOffers));
     this.#allDestinations = allDestinations;
     this.#allOffers = allOffers;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleEditRollUp = onEditRollUp;
+    this.#handleDeleteClick = onDeleteClick;
     this._restoreHandlers();
 
   }
@@ -152,6 +154,7 @@ export default class PointEditFormView extends AbstractStatefulView{
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeListChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
     this.#setDatepickerStart();
     this.#setDatepickerEnd();
   }
@@ -254,8 +257,12 @@ export default class PointEditFormView extends AbstractStatefulView{
       }
     );
   }
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(PointEditFormView.parseStateToRoutePoint(this.#initialRoutePoint));
+  };
 
-  static parseRouteToState(routePoint, destinationRoutePoint, typeOffers) {
+  static parseRoutePointToState(routePoint, destinationRoutePoint, typeOffers) {
     return {
       ...routePoint,
       destination: destinationRoutePoint,

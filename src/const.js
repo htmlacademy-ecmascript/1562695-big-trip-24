@@ -31,6 +31,12 @@ const SortType = {
   PRICE: 'Price',
   OFFERS: 'Offers'
 };
+const FilterType = {
+  EVERYTHING: 'Everything',
+  PAST: 'Past',
+  PRESENT: 'Present',
+  FUTURE: 'Future',
+};
 const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
@@ -47,4 +53,4 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-export {TYPES, CITIES, DESCRIPTION_TEXT, POINT_COUNT, DEFAULT_TYPE, BlankPoint, DATE_FORMAT, TIME_FORMAT, FULL_DATE_FORMAT, EmptyListText, SortType, Mode, DISABLED_SORT_TYPES, UserAction, UpdateType};
+export {TYPES, CITIES, DESCRIPTION_TEXT, POINT_COUNT, DEFAULT_TYPE, BlankPoint, DATE_FORMAT, TIME_FORMAT, FULL_DATE_FORMAT, EmptyListText, SortType, FilterType, Mode, DISABLED_SORT_TYPES, UserAction, UpdateType};

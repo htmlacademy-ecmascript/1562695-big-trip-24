@@ -19,7 +19,7 @@ export default class RoutePointListPresenter {
 
   #routePointsPresenters = new Map();
   #routePointListComponent = new RoutePointListView();
-  
+
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
 
@@ -47,7 +47,7 @@ export default class RoutePointListPresenter {
       case SortType.TIME:
         return filteredPoint.sort(sortByTime);
       case SortType.PRICE:
-        return  filteredPoint.sort(sortByPrice);
+        return filteredPoint.sort(sortByPrice);
     }
     return filteredPoint.sort(sortByDay);
   }
@@ -55,6 +55,7 @@ export default class RoutePointListPresenter {
   init() {
     this.#renderMainComponent();
   }
+
   createPoint() {
     if (this.#emptyList) {
       remove(this.#emptyList);
@@ -79,6 +80,7 @@ export default class RoutePointListPresenter {
         break;
     }
   };
+
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:

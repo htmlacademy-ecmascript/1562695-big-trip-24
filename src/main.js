@@ -17,15 +17,15 @@ const filterModel = new FilterModel();
 const RoutePointList = new RoutePointListPresenter({routePointsListContainer: siteSectionElement, routePointsModel, filterModel, onNewRoutePointDestroy: handleNewRoutePointFormClose,});
 const filterPresenter = new FilterPresenter({filterContainer: siteFilterElement, filterModel, routePointsModel});
 const newRoutePointButtonComponent = new NewRoutePointButton({
-    onClick: handleNewRoutePointButtonClick
+  onClick: handleNewRoutePointButtonClick
 });
 function handleNewRoutePointFormClose() {
-   newRoutePointButtonComponent.element.disabled = false;
+  newRoutePointButtonComponent.element.disabled = false;
 }
-  
+
 function handleNewRoutePointButtonClick() {
-   RoutePointList.createPoint();
-   newRoutePointButtonComponent.element.disabled = true;
+  RoutePointList.createPoint();
+  newRoutePointButtonComponent.element.disabled = true;
 }
 
 render(new TripInfoView(), siteMainElement, RenderPosition.AFTERBEGIN);

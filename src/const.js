@@ -14,7 +14,6 @@ const BlankPoint = {
   dateTo: dayjs(new Date()).toISOString(),
   isFavorite: false,
   offers:[],
-  
 };
 const DATE_FORMAT = 'MMM D';
 const TIME_FORMAT = 'HH:mm';

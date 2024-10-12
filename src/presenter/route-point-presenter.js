@@ -107,7 +107,7 @@ export default class RoutePointPresenter {
 
   #handleFormSubmit = (update) => {
     const isPatchUpdate = isDatesSame(this.#routePoint.dateFrom, update.dateFrom) && isDatesSame(this.#routePoint.dateTo, update.dateTo);
-    this.#handleRoutePointChange(      
+    this.#handleRoutePointChange(
       UserAction.UPDATE_POINT,
       isPatchUpdate ? UpdateType.PATCH : UpdateType.MINOR,
       update
@@ -122,6 +122,7 @@ export default class RoutePointPresenter {
       {...this.#routePoint, isFavorite: !this.#routePoint.isFavorite}
     );
   };
+
   #handleDeleteClick = (routePoint) => {
     this.#handleRoutePointChange(
       UserAction.DELETE_POINT,

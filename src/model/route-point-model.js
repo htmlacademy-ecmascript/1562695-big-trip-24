@@ -48,6 +48,7 @@ export default class RoutePointsModel extends Observable {
     ];
     this._notify(updateType, update);
   }
+
   addRoutePoint(updateType, update) {
     this.#points = [
       update,
@@ -55,7 +56,7 @@ export default class RoutePointsModel extends Observable {
     ];
     this._notify(updateType, update);
   }
-  
+
   deleteRoutePoint(updateType, update) {
     const index = this.#points.findIndex((point) => point.id === update.id);
     if (index === -1) {

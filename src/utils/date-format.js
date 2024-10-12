@@ -44,7 +44,7 @@ function isTodayEvent(dateToCheckStart, dateToCheckEnd) {
 }
 
 function isDatesSame(dateToCheck1, dateToCheck2){
-  return (dateToCheck1 === null && dateToCheck2 === null) || dayjs(dateToCheck1).isSame(dateToCheck2, 'D')
+  return (dateToCheck1 === null && dateToCheck2 === null) || dayjs(dateToCheck1).isSame(dateToCheck2, 'D');
 }
 
 export { humanizeRoutePointDate, calculateDiffTime, isFutureEvent, isPastEvent, isTodayEvent, isDatesSame };

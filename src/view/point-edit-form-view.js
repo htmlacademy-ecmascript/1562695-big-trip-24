@@ -38,11 +38,9 @@ const createPointEditFormTemplate = (state, allDestinations) => {
     return createTypeItemTemplate(typeItem, isCheckedTypeItem);
   }).join('');
 
-
-
   const createAllDestinationsTemplate = allDestinations.map((desctinationItem) => `<option value="${desctinationItem.name}"></option>`).join('');
 
-  const createPhotoesTemplate = (roitePointDestination&&roitePointDestination.pictures ? roitePointDestination.pictures.map((pictureItem) => `<img class="event__photo" src="${pictureItem.src}" alt="Event photo">`).join('') : '');
+  const createPhotoesTemplate = (roitePointDestination && roitePointDestination.pictures ? roitePointDestination.pictures.map((pictureItem) => `<img class="event__photo" src="${pictureItem.src}" alt="Event photo">`).join('') : '');
 
   const createAllOffersTemplate = typeOffers.offers.map((offerItem) => {
     const isCheckedOfferItem = offers.includes(offerItem.id);
@@ -54,8 +52,7 @@ const createPointEditFormTemplate = (state, allDestinations) => {
       <div class="event__available-offers">
         ${createAllOffersTemplate}
       </div>
-    </section>
-  `: '';
+    </section>` : '';
 
 
   const createSecionDestination = roitePointDestination !== undefined ? `<section class="event__section  event__section--destination">

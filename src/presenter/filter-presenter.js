@@ -41,9 +41,11 @@ export default class FilterPresenter {
     replace(this.#filterComponent, prevFilterComponent);
     remove(prevFilterComponent);
   }
+
   #handleModelEvent = () => {
     this.init();
   };
+
   #handleFilterTypeChange = (filterType) => {
     if (this.#filterModel.filter === filterType) {
       return;

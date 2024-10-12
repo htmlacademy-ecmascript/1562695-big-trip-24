@@ -26,13 +26,13 @@ export default class RoutePointsModel extends Observable {
     return allDestinations.find((item)=>item.id === id);
   }
 
-  getOffersByType(type = DEFAULT_TYPE.toLowerCase()){
+  getOffersByType(type = DEFAULT_TYPE){
     const allOffers = this.offers;
     return allOffers.find((item)=>item.type === type);
   }
 
   getOffersById(type, offersId){
-    const offersType = this.getOffersByType(type);
+    const offersType = this.getOffersByType(type.toLowerCase());
     return offersType.offers.filter((item)=>offersId.includes(item.id));
   }
 

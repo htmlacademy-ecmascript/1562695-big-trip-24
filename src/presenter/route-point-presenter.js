@@ -44,8 +44,8 @@ export default class RoutePointPresenter {
       typeOffers: this.#routePointsModel.getOffersByType(this.#routePoint.type),
       allDestinations: this.#routePointsModel.destinations,
       allOffers: this.#routePointsModel.offers,
-      onFormSubmit: this.#hideEditorPoint,
-      onEditRollUp: this.#hideEditorPoint,
+      onFormSubmit: this.#handleFormSubmit,
+      onEditRollUp: this.#handleFormSubmit,
       onDeleteClick: this.#handleDeleteClick,
     });
 
@@ -105,7 +105,7 @@ export default class RoutePointPresenter {
     this.#replaceRoutePointToForm();
   };
 
-  #hideEditorPoint = (update) => {
+  #handleFormSubmit = (update) => {
     const isPatchUpdate = isDatesSame(this.#routePoint.dateFrom, update.dateFrom) && isDatesSame(this.#routePoint.dateTo, update.dateTo);
     this.#handleRoutePointChange(      
       UserAction.UPDATE_POINT,

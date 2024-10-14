@@ -1,7 +1,7 @@
 import SortView from '../view/sort-view.js';
 import RoutePointListView from '../view/route-point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
-import {FilterType, SortType, UpdateType, UserAction} from '../const.js';
+import {FilterType, SortType, UpdateType, UserAction, EmptyListText} from '../const.js';
 import RoutePointPresenter from './route-point-presenter.js';
 import NewRoutePointPresenter from './new-route-point-presenter.js';
 
@@ -15,10 +15,13 @@ export default class RoutePointListPresenter {
   #sorting = null;
   #filterModel = null;
   #emptyList = null;
+  #loadingComponent = null;
   #newRoutePointPresenter = null;
 
   #routePointsPresenters = new Map();
   #routePointListComponent = new RoutePointListView();
+  #loadingText = Object.keys(EmptyListText).find((item) => item === 'LOADING');
+  #isLoading = true;
 
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
@@ -94,6 +97,11 @@ export default class RoutePointListPresenter {
         this.#clearPage({resetSortType: true});
         this.#renderMainComponent();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderMainComponent();
+        break;
     }
   };
 
@@ -102,6 +110,7 @@ export default class RoutePointListPresenter {
     this.#routePointsPresenters.forEach((presenter) => presenter.destroy());
     this.#routePointsPresenters.clear();
     remove(this.#sorting);
+    remove(this.#loadingComponent);
     if (this.#emptyList) {
       remove(this.#emptyList);
     }
@@ -136,12 +145,23 @@ export default class RoutePointListPresenter {
     render(this.#sorting, this.#routePointsListContainer);
   }
 
+  #renderLoading() {
+    this.#loadingComponent = new EmptyListView({
+      filterType: this.#loadingText,
+    });
+    render(this.#loadingComponent, this.#routePointsListContainer);
+  }
+
   #renderRoutePointsList(){
     render(this.#routePointListComponent, this.#routePointsListContainer);
     this.routePoints.forEach((point) => this.#renderRoutePoint(point));
   }
 
   #renderMainComponent(){
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
     if (this.routePoints.length === 0){
       this.#renderListEmpty();
       return;

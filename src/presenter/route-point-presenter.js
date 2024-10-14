@@ -1,13 +1,14 @@
 import RoutePointView from '../view/route-point-view.js';
 import PointEditFormView from '../view/point-edit-form-view.js';
 import {remove, render, replace } from '../framework/render.js';
-import { MODE } from '../const.js';
+import { Mode, UpdateType, UserAction } from '../const.js';
+import { isDatesSame } from '../utils/date-format.js';
 
 export default class RoutePointPresenter {
   #routePointListComponent = null;
   #routePointsModel = null;
   #routePoint = null;
-  #mode = MODE.DEFAULT;
+  #mode = Mode.DEFAULT;
 
   #routePointComponent = null;
   #editRoutePointComponent = null;
@@ -43,8 +44,9 @@ export default class RoutePointPresenter {
       typeOffers: this.#routePointsModel.getOffersByType(this.#routePoint.type),
       allDestinations: this.#routePointsModel.destinations,
       allOffers: this.#routePointsModel.offers,
-      onFormSubmit: this.#hideEditorPoint,
-      onEditRollUp: this.#hideEditorPoint,
+      onFormSubmit: this.#handleFormSubmit,
+      onEditRollUp: this.#handleFormSubmit,
+      onDeleteClick: this.#handleDeleteClick,
     });
 
     if (prevRoutePointComponent === null || prevRoutePointEditComponent === null) {
@@ -52,11 +54,11 @@ export default class RoutePointPresenter {
       return;
     }
 
-    if (this.#mode === MODE.DEFAULT) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#routePointComponent, prevRoutePointComponent);
     }
 
-    if (this.#mode === MODE.EDITING) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#editRoutePointComponent, prevRoutePointEditComponent);
     }
 
@@ -66,7 +68,7 @@ export default class RoutePointPresenter {
 
   resetView() {
 
-    if (this.#mode !== MODE.DEFAULT) {
+    if (this.#mode !== Mode.DEFAULT) {
       this.#editRoutePointComponent.reset();
       this.#replaceFormToRoutePoint();
     }
@@ -89,26 +91,43 @@ export default class RoutePointPresenter {
   #replaceFormToRoutePoint(){
     replace(this.#routePointComponent, this.#editRoutePointComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
-    this.#mode = MODE.DEFAULT;
+    this.#mode = Mode.DEFAULT;
   }
 
   #replaceRoutePointToForm(){
     replace(this.#editRoutePointComponent, this.#routePointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
     this.#handleModeChange();
-    this.#mode = MODE.EDITING;
+    this.#mode = Mode.EDITING;
   }
 
   #showEditorPoint = () =>{
     this.#replaceRoutePointToForm();
   };
 
-  #hideEditorPoint = (routePoint) => {
-    this.#handleRoutePointChange(routePoint);
+  #handleFormSubmit = (update) => {
+    const isPatchUpdate = isDatesSame(this.#routePoint.dateFrom, update.dateFrom) && isDatesSame(this.#routePoint.dateTo, update.dateTo);
+    this.#handleRoutePointChange(
+      UserAction.UPDATE_POINT,
+      isPatchUpdate ? UpdateType.PATCH : UpdateType.MINOR,
+      update
+    );
     this.#replaceFormToRoutePoint();
   };
 
   #handleFavoriteClick = () => {
-    this.#handleRoutePointChange({...this.#routePoint, isFavorite: !this.#routePoint.isFavorite});
+    this.#handleRoutePointChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      {...this.#routePoint, isFavorite: !this.#routePoint.isFavorite}
+    );
+  };
+
+  #handleDeleteClick = (routePoint) => {
+    this.#handleRoutePointChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      routePoint,
+    );
   };
 }

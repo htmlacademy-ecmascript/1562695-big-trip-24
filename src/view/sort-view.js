@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { capitalizeText} from '../utils/common.js';
-import {SORT_TYPES, DISABLED_SORT_TYPES} from '../const';
+import {SortType, DISABLED_SORT_TYPES} from '../const';
 
 function createSortItemTemplate(type, checkedSortType){
   return `
@@ -14,7 +14,7 @@ function createSortItemTemplate(type, checkedSortType){
 function createSortListTemplate(checkedSortType) {
   return (`
     <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-    ${Object.values(SORT_TYPES).map((type)=>createSortItemTemplate(type, checkedSortType)).join('')}
+    ${Object.values(SortType).map((type)=>createSortItemTemplate(type, checkedSortType)).join('')}
 
     </form>`);
 }

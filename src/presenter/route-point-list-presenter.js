@@ -1,12 +1,13 @@
 import SortView from '../view/sort-view.js';
 import RoutePointListView from '../view/route-point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
-import {FilterType, SortType, UpdateType, UserAction, EmptyListText} from '../const.js';
+import {FilterType, SortType, UpdateType, UserAction, EmptyListText, TimeLimit} from '../const.js';
 import RoutePointPresenter from './route-point-presenter.js';
 import NewRoutePointPresenter from './new-route-point-presenter.js';
 
 import {sortByPrice, sortByTime, sortByDay} from '../utils/sorting.js';
 import { render, remove } from '../framework/render.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import { filter } from '../utils/filter.js';
 
 export default class RoutePointListPresenter {
@@ -20,6 +21,11 @@ export default class RoutePointListPresenter {
 
   #routePointsPresenters = new Map();
   #routePointListComponent = new RoutePointListView();
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
+
   #loadingText = Object.keys(EmptyListText).find((item) => item === 'LOADING');
   #isLoading = true;
 
@@ -70,18 +76,35 @@ export default class RoutePointListPresenter {
     this.#newRoutePointPresenter.init();
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#routePointsModel.updateRoutePoint(updateType, update);
+        this.#routePointsPresenters.get(update.id).setSaving();
+        try {
+          await this.#routePointsModel.updateRoutePoint(updateType, update);
+        } catch(err) {
+          this.#routePointsPresenters.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_POINT:
-        this.#routePointsModel.addRoutePoint(updateType, update);
+        this.#newRoutePointPresenter.setSaving();
+        try {
+          this.#routePointsModel.addRoutePoint(updateType, update);
+        } catch(err) {
+          this.#newRoutePointPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_POINT:
-        this.#routePointsModel.deleteRoutePoint(updateType, update);
+        this.#routePointsPresenters.get(update.id).setDeleting();
+        try {
+          this.#routePointsModel.deleteRoutePoint(updateType, update);
+        } catch(err) {
+          this.#routePointsPresenters.get(update.id).setAborting();
+        }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {

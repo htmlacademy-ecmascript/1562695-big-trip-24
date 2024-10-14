@@ -1,7 +1,6 @@
 import PointEditFormView from '../view/point-edit-form-view.js';
 import { RenderPosition, remove, render } from '../framework/render.js';
 import { BlankPoint, UpdateType, UserAction } from '../const.js';
-import { nanoid } from 'nanoid';
 
 export default class NewRoutePointPresenter {
   #routePointListComponent = null;
@@ -51,11 +50,29 @@ export default class NewRoutePointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
-  #handleFormSubmit = (point) => {
+  setSaving() {
+    this.#editRoutePointComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#editRoutePointComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+    this.#editRoutePointComponent.shake(resetFormState);
+  }
+
+  #handleFormSubmit = (routePoint) => {
     this.#handleRoutePointChange(
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
-      {...point, id: nanoid()},
+      routePoint,
     );
     this.destroy();
   };

@@ -29,11 +29,9 @@ export default class RoutePointsModel extends Observable {
   async init() {
     try {
       const routePoints = await this.#routePointsApiService.routePoints;
-      const offers = await this.#routePointsApiService.offers;
-      const destinations = await this.#routePointsApiService.destinations;
+      this.#offers = await this.#routePointsApiService.offers;
+      this.#destinations = await this.#routePointsApiService.destinations;
       this.#routePoints = routePoints.map(this.#routePointsAdapterService.adaptToClient);
-      this.#offers = offers.map((offer) => offer);
-      this.#destinations = destinations.map((destination) => destination);
     } catch(err) {
       this.#routePoints = [];
       this.#offers = [];
@@ -76,23 +74,35 @@ export default class RoutePointsModel extends Observable {
     }
   }
 
-  addRoutePoint(updateType, update) {
-    this.#routePoints = [
-      update,
-      ...this.#routePoints,
-    ];
-    this._notify(updateType, update);
+  async addRoutePoint(updateType, update) {
+    try {
+      const response = await this.#routePointsApiService.addRoutePoint(update);
+      const newPoint = this.#routePointsAdapterService.adaptToClient(response);
+      this.#routePoints = [
+        newPoint,
+        ...this.#routePoints,
+      ];
+
+      this._notify(updateType, newPoint);
+    } catch(err) {
+      throw new Error('Can\'t add point');
+    }
   }
 
-  deleteRoutePoint(updateType, update) {
+  async deleteRoutePoint(updateType, update) {
     const index = this.#routePoints.findIndex((routePoint) => routePoint.id === update.id);
     if (index === -1) {
       throw new Error('Can\'t delete unexisting point');
     }
-    this.#routePoints = [
-      ...this.#routePoints.slice(0, index),
-      ...this.#routePoints.slice(index + 1),
-    ];
-    this._notify(updateType);
+    try {
+      await this.#routePointsApiService.deleteRoutePoint(update);
+      this.#routePoints = [
+        ...this.#routePoints.slice(0, index),
+        ...this.#routePoints.slice(index + 1),
+      ];
+      this._notify(updateType);
+    } catch(err) {
+      throw new Error('Can\'t delete point');
+    }
   }
 }

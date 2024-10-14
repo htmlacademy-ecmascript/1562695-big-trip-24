@@ -90,7 +90,7 @@ export default class RoutePointListPresenter {
       case UserAction.ADD_POINT:
         this.#newRoutePointPresenter.setSaving();
         try {
-          this.#routePointsModel.addRoutePoint(updateType, update);
+          await this.#routePointsModel.addRoutePoint(updateType, update);
         } catch(err) {
           this.#newRoutePointPresenter.setAborting();
         }
@@ -98,7 +98,7 @@ export default class RoutePointListPresenter {
       case UserAction.DELETE_POINT:
         this.#routePointsPresenters.get(update.id).setDeleting();
         try {
-          this.#routePointsModel.deleteRoutePoint(updateType, update);
+          await this.#routePointsModel.deleteRoutePoint(updateType, update);
         } catch(err) {
           this.#routePointsPresenters.get(update.id).setAborting();
         }
@@ -187,9 +187,10 @@ export default class RoutePointListPresenter {
     }
     if (this.routePoints.length === 0){
       this.#renderListEmpty();
-      return;
     }
-    this.#renderSorting();
+    if (this.routePoints.length > 0){
+      this.#renderSorting();
+    }
     this.#renderRoutePointsList();
   }
 

@@ -74,7 +74,6 @@ export default class NewRoutePointPresenter {
       UpdateType.MAJOR,
       routePoint,
     );
-    this.destroy();
   };
 
   #handleCancelClick = () => {

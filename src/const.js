@@ -5,7 +5,6 @@ const DESCRIPTION_TEXT = 'Lorem ipsum dolor sit amet, consectetur adipiscing eli
 const POINT_COUNT = 3;
 const DEFAULT_TYPE = 'flight';
 const BlankPoint = {
-  // id: 0,
   type: DEFAULT_TYPE,
   basePrice: 0,
   destination: null,

@@ -118,7 +118,7 @@ const createPointEditFormTemplate = (state, allDestinations) => {
                     <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}" ${isDisabled ? 'disabled' : ''}>
                   </div>
 
-                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaving ? 'disabled' : ''}>${isSaving ? 'Saving' : 'Save'}</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaving ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
                   <button class="event__reset-btn" type="reset" ${isDeleting ? 'disabled' : ''}>${setButtonName()}</button>
                   <button class="event__rollup-btn" type="button">
                     <span class="visually-hidden">Open event</span>

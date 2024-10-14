@@ -28,7 +28,7 @@ const createRoutePointTemplate = (routePoint, offers, destination)=> {
                   <p class="event__time">
                     <time class="event__start-time" datetime="${dateFrom}">${humanizeRoutePointDate(dateFrom, TIME_FORMAT)}</time>
                     &mdash;
-                    <time class="event__end-time" datetime="${dateTo}">${humanizeRoutePointDate(dateFrom, TIME_FORMAT)}</time>
+                    <time class="event__end-time" datetime="${dateTo}">${humanizeRoutePointDate(dateTo, TIME_FORMAT)}</time>
                   </p>
                   <p class="event__duration">${calculateDiffTime(dateFrom,dateTo)}</p>
                 </div>
@@ -67,7 +67,7 @@ export default class RoutePointView extends AbstractView {
     this.#handleEditClick = onEditClick;
     this.#handleFavoriteClick = onFavoriteClick;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editButtonClickHandler);
     this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   }
 
@@ -75,7 +75,7 @@ export default class RoutePointView extends AbstractView {
     return createRoutePointTemplate(this.#routePoint, this.#offers, this.#destination);
   }
 
-  #editClickHandler = (evt) => {
+  #editButtonClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleEditClick();
   };

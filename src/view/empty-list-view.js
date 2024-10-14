@@ -8,7 +8,7 @@ function createEmptyListTemplate(filterType){
 
 export default class EmptyListView extends AbstractView{
   #filterType = null;
-  constructor(filterType){
+  constructor({filterType}){
     super();
     this.#filterType = filterType;
   }

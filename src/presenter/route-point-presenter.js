@@ -45,7 +45,7 @@ export default class RoutePointPresenter {
       allDestinations: this.#routePointsModel.destinations,
       allOffers: this.#routePointsModel.offers,
       onFormSubmit: this.#handleFormSubmit,
-      onEditRollUp: this.#handleFormSubmit,
+      onEditRollUp: this.#handleEditRollUp,
       onDeleteClick: this.#handleDeleteClick,
     });
 
@@ -120,6 +120,10 @@ export default class RoutePointPresenter {
       this.#replaceFormToRoutePoint();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
+  };
+
+  #handleEditRollUp = () => {
+    this.#replaceFormToRoutePoint();
   };
 
   #replaceFormToRoutePoint(){

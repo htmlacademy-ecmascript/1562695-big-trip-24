@@ -54,7 +54,7 @@ const createPointEditFormTemplate = (state, allDestinations) => {
     return createOfferItemTemplate(offerItem, isCheckedOfferItem);
   }).join('');
 
-  const createSectionOffers = typeOffers !== undefined && typeOffers.offers.length > 0 ? `<section class="event__section  event__section--offers">
+  const createSectionOffers = typeOffers && typeOffers.offers.length > 0 ? `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
       <div class="event__available-offers">
         ${createAllOffersTemplate}
@@ -62,7 +62,7 @@ const createPointEditFormTemplate = (state, allDestinations) => {
     </section>` : '';
 
 
-  const createSecionDestination = roitePointDestination !== undefined && roitePointDestination.description !== '' ? `<section class="event__section  event__section--destination">
+  const createSecionDestination = roitePointDestination && roitePointDestination.description !== '' ? `<section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
     <p class="event__destination-description">${roitePointDestination.description}</p>
     ${roitePointDestination.pictures.length > 0 ? `
@@ -162,7 +162,7 @@ export default class PointEditFormView extends AbstractStatefulView{
 
   _restoreHandlers() {
     this.element.addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editRollUpHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpButtonClickHandler );
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeListChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
@@ -212,7 +212,7 @@ export default class PointEditFormView extends AbstractStatefulView{
     this.#handleFormSubmit(PointEditFormView.parseStateToRoutePoint(this._state));
   };
 
-  #editRollUpHandler = (evt) => {
+  #rollUpButtonClickHandler  = (evt) => {
     evt.preventDefault();
     this.#handleEditRollUp(PointEditFormView.parseStateToRoutePoint(this.#initialRoutePoint));
   };

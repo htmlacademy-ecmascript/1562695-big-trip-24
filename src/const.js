@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 const CITIES = ['Amsterdam','Paris', 'London', 'Madrid', 'Lissabon', 'Rome', 'Helsinki' ];
 const DESCRIPTION_TEXT = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.';
@@ -6,12 +5,11 @@ const DESCRIPTION_TEXT = 'Lorem ipsum dolor sit amet, consectetur adipiscing eli
 const POINT_COUNT = 3;
 const DEFAULT_TYPE = 'flight';
 const BlankPoint = {
-  id: 0,
   type: DEFAULT_TYPE,
   basePrice: 0,
   destination: null,
-  dateFrom: dayjs(new Date()).toISOString(),
-  dateTo: dayjs(new Date()).toISOString(),
+  dateFrom: null,
+  dateTo: null,
   isFavorite: false,
   offers:[],
 };
@@ -46,19 +44,24 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 const EmptyListText = {
   [FilterType.EVERYTHING]: 'Click New Event to create your first point',
   [FilterType.PAST]: 'There are no past events now',
   [FilterType.PRESENT]: 'There are no present events now',
   [FilterType.FUTURE]: 'There are no future events now',
-  [FilterType.LOADING]: 'Loading...',
-  [FilterType.LOADING_ERROR]: 'Failed to load latest route information'
+  LOADING: 'Loading...',
+  LOADING_ERROR: 'Failed to load latest route information'
 };
 
 const ValidationStyle = {
   FOR_BORDER: 'border: 1px solid red; border-radius: 3px',
   FOR_TEXT_COLOR: 'color: red',
 };
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
-export {TYPES, CITIES, DESCRIPTION_TEXT, POINT_COUNT, DEFAULT_TYPE, BlankPoint, DATE_FORMAT, TIME_FORMAT, FULL_DATE_FORMAT, EmptyListText, SortType, FilterType, Mode, DISABLED_SORT_TYPES, UserAction, UpdateType, ValidationStyle};
+export {TYPES, CITIES, DESCRIPTION_TEXT, POINT_COUNT, DEFAULT_TYPE, BlankPoint, DATE_FORMAT, TIME_FORMAT, FULL_DATE_FORMAT, EmptyListText, SortType, FilterType, Mode, DISABLED_SORT_TYPES, UserAction, UpdateType, ValidationStyle, TimeLimit};

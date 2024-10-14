@@ -1,16 +1,21 @@
-import {getRandomPoints } from '../mock/points-route.js';
-import {DEFAULT_TYPE} from '../const';
-import {mockOffers} from '../mock/offers.js';
-import {mockDestinations} from '../mock/destinations.js';
+import {DEFAULT_TYPE, UpdateType} from '../const';
 import Observable from '../framework/observable.js';
+import AdapterService from '../server/adapter-service.js';
 
 export default class RoutePointsModel extends Observable {
-  #points = getRandomPoints;
-  #offers = mockOffers;
-  #destinations = mockDestinations;
+  #routePoints = [];
+  #offers = [];
+  #destinations = [];
+  #routePointsApiService = null;
+  #routePointsAdapterService = new AdapterService();
+
+  constructor({routePointsApiService}) {
+    super();
+    this.#routePointsApiService = routePointsApiService;
+  }
 
   get routePoints() {
-    return this.#points;
+    return this.#routePoints;
   }
 
   get offers() {
@@ -19,6 +24,20 @@ export default class RoutePointsModel extends Observable {
 
   get destinations() {
     return this.#destinations;
+  }
+
+  async init() {
+    try {
+      const routePoints = await this.#routePointsApiService.routePoints;
+      this.#offers = await this.#routePointsApiService.offers;
+      this.#destinations = await this.#routePointsApiService.destinations;
+      this.#routePoints = routePoints.map(this.#routePointsAdapterService.adaptToClient);
+    } catch(err) {
+      this.#routePoints = [];
+      this.#offers = [];
+      this.#destinations = [];
+    }
+    this._notify(UpdateType.INIT);
   }
 
   getDestinationsById(id){
@@ -36,36 +55,54 @@ export default class RoutePointsModel extends Observable {
     return offersType.offers.filter((item)=>offersId.includes(item.id));
   }
 
-  updateRoutePoint(updateType, update) {
-    const index = this.#points.findIndex((point) => point.id === update.id);
+  async updateRoutePoint(updateType, update) {
+    const index = this.#routePoints.findIndex((routePoint) => routePoint.id === update.id);
     if (index === -1) {
       throw new Error('Can\'t update unexisting point');
     }
-    this.#points = [
-      ...this.#points.slice(0, index),
-      update,
-      ...this.#points.slice(index + 1),
-    ];
-    this._notify(updateType, update);
+    try {
+      const response = await this.#routePointsApiService.updateRoutePoints(update);
+      const updatedPoint = this.#routePointsAdapterService.adaptToClient(response);
+      this.#routePoints = [
+        ...this.#routePoints.slice(0, index),
+        updatedPoint,
+        ...this.#routePoints.slice(index + 1),
+      ];
+      this._notify(updateType, updatedPoint);
+    } catch(err) {
+      throw new Error('Can\'t update point');
+    }
   }
 
-  addRoutePoint(updateType, update) {
-    this.#points = [
-      update,
-      ...this.#points,
-    ];
-    this._notify(updateType, update);
+  async addRoutePoint(updateType, update) {
+    try {
+      const response = await this.#routePointsApiService.addRoutePoint(update);
+      const newPoint = this.#routePointsAdapterService.adaptToClient(response);
+      this.#routePoints = [
+        newPoint,
+        ...this.#routePoints,
+      ];
+
+      this._notify(updateType, newPoint);
+    } catch(err) {
+      throw new Error('Can\'t add point');
+    }
   }
 
-  deleteRoutePoint(updateType, update) {
-    const index = this.#points.findIndex((point) => point.id === update.id);
+  async deleteRoutePoint(updateType, update) {
+    const index = this.#routePoints.findIndex((routePoint) => routePoint.id === update.id);
     if (index === -1) {
       throw new Error('Can\'t delete unexisting point');
     }
-    this.#points = [
-      ...this.#points.slice(0, index),
-      ...this.#points.slice(index + 1),
-    ];
-    this._notify(updateType);
+    try {
+      await this.#routePointsApiService.deleteRoutePoint(update);
+      this.#routePoints = [
+        ...this.#routePoints.slice(0, index),
+        ...this.#routePoints.slice(index + 1),
+      ];
+      this._notify(updateType);
+    } catch(err) {
+      throw new Error('Can\'t delete point');
+    }
   }
 }

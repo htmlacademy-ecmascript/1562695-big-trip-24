@@ -45,7 +45,7 @@ export default class RoutePointPresenter {
       allDestinations: this.#routePointsModel.destinations,
       allOffers: this.#routePointsModel.offers,
       onFormSubmit: this.#handleFormSubmit,
-      onEditRollUp: this.#handleFormSubmit,
+      onEditRollUp: this.#handleEditRollUp,
       onDeleteClick: this.#handleDeleteClick,
     });
 
@@ -59,15 +59,49 @@ export default class RoutePointPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#editRoutePointComponent, prevRoutePointEditComponent);
+      // replace(this.#editRoutePointComponent, prevRoutePointEditComponent);
+      replace(this.#routePointComponent, prevRoutePointEditComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevRoutePointComponent);
     remove(prevRoutePointEditComponent);
   }
 
-  resetView() {
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editRoutePointComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
 
+  setDeleting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editRoutePointComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  }
+
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#routePointComponent.shake();
+      return;
+    }
+    const resetFormState = () => {
+      this.#editRoutePointComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+    this.#editRoutePointComponent.shake(resetFormState);
+  }
+
+  resetView() {
     if (this.#mode !== Mode.DEFAULT) {
       this.#editRoutePointComponent.reset();
       this.#replaceFormToRoutePoint();
@@ -88,6 +122,10 @@ export default class RoutePointPresenter {
     }
   };
 
+  #handleEditRollUp = () => {
+    this.#replaceFormToRoutePoint();
+  };
+
   #replaceFormToRoutePoint(){
     replace(this.#routePointComponent, this.#editRoutePointComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
@@ -106,13 +144,12 @@ export default class RoutePointPresenter {
   };
 
   #handleFormSubmit = (update) => {
-    const isPatchUpdate = isDatesSame(this.#routePoint.dateFrom, update.dateFrom) && isDatesSame(this.#routePoint.dateTo, update.dateTo);
+    const isPatchUpdate = isDatesSame(this.#routePoint.dateFrom, update.dateFrom) && isDatesSame(this.#routePoint.dateTo, update.dateTo) && (parseInt(this.#routePoint.basePrice, 10) === parseInt(update.basePrice, 10));
     this.#handleRoutePointChange(
       UserAction.UPDATE_POINT,
       isPatchUpdate ? UpdateType.PATCH : UpdateType.MINOR,
       update
     );
-    this.#replaceFormToRoutePoint();
   };
 
   #handleFavoriteClick = () => {

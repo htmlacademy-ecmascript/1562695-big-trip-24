@@ -1,12 +1,12 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import {humanizeRoutePointDate} from '../utils/date-format.js';
-import {DATE_FOR_TRIP_INFO} from '../const';
+import {DateFormat} from '../const';
 
 const createTripInfoTemplate = (destinations, dates, cost) => {
   const createDatesSection = () => {
     if (dates) {
-      const startRoute = humanizeRoutePointDate(dates[0], DATE_FOR_TRIP_INFO);
-      const endRoute = humanizeRoutePointDate(dates[1], DATE_FOR_TRIP_INFO);
+      const startRoute = humanizeRoutePointDate(dates[0], DateFormat.DATE_FOR_TRIP_INFO);
+      const endRoute = humanizeRoutePointDate(dates[1], DateFormat.DATE_FOR_TRIP_INFO);
       return `<p class="trip-info__dates">${startRoute}&nbsp;&mdash;&nbsp;${endRoute}</p>`;
     }
     return '';

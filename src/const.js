@@ -14,10 +14,12 @@ const BlankPoint = {
   isFavorite: false,
   offers:[],
 };
-const DATE_FORMAT = 'MMM D';
-const TIME_FORMAT = 'HH:mm';
-const FULL_DATE_FORMAT = 'DD/MM/YY HH:mm';
-const DATE_FOR_TRIP_INFO = 'D MMM';
+const DateFormat = {
+  DATE_FORMAT: 'MMM D',
+  TIME_FORMAT: 'HH:mm',
+  FULL_DATE_FORMAT: 'DD/MM/YY HH:mm',
+  DATE_FOR_TRIP_INFO: 'D MMM',
+};
 
 const SortType = {
   DAY: 'day',
@@ -66,4 +68,4 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
-export {TYPES, CITIES, DESCRIPTION_TEXT, POINT_COUNT, DEFAULT_TYPE, BlankPoint, DATE_FORMAT, TIME_FORMAT, FULL_DATE_FORMAT, DATE_FOR_TRIP_INFO, EmptyListText, SortType, FilterType, Mode, DISABLED_SORT_TYPES, UserAction, UpdateType, ValidationStyle, TimeLimit, MAX_COUNT_DESTINATIONS};
+export {TYPES, CITIES, DESCRIPTION_TEXT, POINT_COUNT, DEFAULT_TYPE, BlankPoint, DateFormat, EmptyListText, SortType, FilterType, Mode, DISABLED_SORT_TYPES, UserAction, UpdateType, ValidationStyle, TimeLimit, MAX_COUNT_DESTINATIONS};

@@ -1,7 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { capitalizeText } from '../utils/common.js';
 import {humanizeRoutePointDate} from '../utils/date-format.js';
-import { TYPES, BlankPoint, FULL_DATE_FORMAT, ValidationStyle } from '../const';
+import { TYPES, BlankPoint, DateFormat, ValidationStyle } from '../const';
 import flatpickr from 'flatpickr';
 import he from 'he';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -9,8 +9,8 @@ import 'flatpickr/dist/flatpickr.min.css';
 const createPointEditFormTemplate = (state, allDestinations) => {
   const { id, basePrice, type, dateFrom, dateTo, offers, typeOffers, destination, isDisabled, isSaving, isDeleting } = state;
   const typeName = capitalizeText(type);
-  const startTime = humanizeRoutePointDate(dateFrom, FULL_DATE_FORMAT);
-  const endTime = humanizeRoutePointDate(dateTo, FULL_DATE_FORMAT);
+  const startTime = humanizeRoutePointDate(dateFrom, DateFormat.FULL_DATE_FORMAT);
+  const endTime = humanizeRoutePointDate(dateTo, DateFormat.FULL_DATE_FORMAT);
   const roitePointDestination = allDestinations.find((item) => item.id === destination);
   // const { name, description, pictures } = roitePointDestination;
   const createTypeItemTemplate = (typeItem, isCheckedTypeItem) =>

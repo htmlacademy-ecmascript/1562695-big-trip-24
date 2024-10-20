@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { capitalizeText} from '../utils/common.js';
 import {humanizeRoutePointDate, calculateDiffTime} from '../utils/date-format.js';
-import {DATE_FORMAT, TIME_FORMAT} from '../const';
+import {DateFormat} from '../const';
 
 const createRoutePointTemplate = (routePoint, offers, destination)=> {
   const { basePrice, type, isFavorite, dateFrom, dateTo } = routePoint;
@@ -14,7 +14,7 @@ const createRoutePointTemplate = (routePoint, offers, destination)=> {
       <span class="event__offer-price">${offerItem.price}</span>
     </li>
   `;
-  const datePoint = humanizeRoutePointDate(dateFrom, DATE_FORMAT);
+  const datePoint = humanizeRoutePointDate(dateFrom, DateFormat.DATE_FORMAT);
   const createOffersTemplate = offers.map((offerItem)=>createOfferItemTemplate(offerItem)).join('');
   return `(
             <li class="trip-events__item">
@@ -26,9 +26,9 @@ const createRoutePointTemplate = (routePoint, offers, destination)=> {
                 <h3 class="event__title">${typeName} ${destination.name}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
-                    <time class="event__start-time" datetime="${dateFrom}">${humanizeRoutePointDate(dateFrom, TIME_FORMAT)}</time>
+                    <time class="event__start-time" datetime="${dateFrom}">${humanizeRoutePointDate(dateFrom, DateFormat.TIME_FORMAT)}</time>
                     &mdash;
-                    <time class="event__end-time" datetime="${dateTo}">${humanizeRoutePointDate(dateTo, TIME_FORMAT)}</time>
+                    <time class="event__end-time" datetime="${dateTo}">${humanizeRoutePointDate(dateTo, DateFormat.TIME_FORMAT)}</time>
                   </p>
                   <p class="event__duration">${calculateDiffTime(dateFrom,dateTo)}</p>
                 </div>

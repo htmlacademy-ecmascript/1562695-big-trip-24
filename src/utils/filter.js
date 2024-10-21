@@ -1,4 +1,4 @@
-import {isFutureEvent, isPastEvent, isTodayEvent} from '../utils/date-format.js';
+import {isFutureEvent, isPastEvent, isTodayEvent} from './date-format.js';
 import { FilterType } from '../const.js';
 
 const filter = {
